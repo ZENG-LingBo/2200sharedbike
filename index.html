@@ -181,7 +181,14 @@
         <h2>How a ride actually happens</h2>
       </div>
       <div class="canvas">
-        <svg class="diagram arch-svg" viewBox="0 0 1600 880" preserveAspectRatio="xMidYMid meet">
+        <!-- Generated from diagrams/d1-journey.d2 via:
+               d2 --layout=elk --pad=24 d1-journey.d2 d1-journey.svg
+               python3 build-slide4.py            (writes diagrams/slide4.svg)
+             then inlined here. ELK lays out the three layered bands and
+             the components inside them; the post-processor restyles to
+             the deck's CSS classes and wraps each step in a .fragment
+             group so the stroke-dashoffset reveal animation fires on →. -->
+        <svg class="diagram arch-svg" viewBox="0 0 1037 866" preserveAspectRatio="xMidYMid meet">
           <defs>
             <marker id="arrow-red-2" viewBox="0 0 10 10" refX="9" refY="5"
                     markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -189,88 +196,86 @@
             </marker>
           </defs>
 
-          <!-- Reuse layer skeleton (always visible on this slide) -->
-          <rect class="layer-band physical" x="40" y="40" width="1520" height="220"/>
-          <text class="layer-label" x="62" y="70">PHYSICAL</text>
-          <rect class="layer-band digital" x="40" y="300" width="1520" height="220"/>
-          <text class="layer-label" x="62" y="330">DIGITAL</text>
-          <rect class="layer-band ops" x="40" y="560" width="1520" height="220"/>
-          <text class="layer-label" x="62" y="590">OPERATIONAL</text>
+          <!-- Layer bands -->
+          <rect class="layer-band physical" x="92" y="92" width="829" height="166"/>
+          <text class="layer-label" x="104" y="114">PHYSICAL</text>
+          <rect class="layer-band digital" x="92" y="338" width="829" height="166"/>
+          <text class="layer-label" x="104" y="360">DIGITAL</text>
+          <rect class="layer-band ops" x="92" y="584" width="829" height="166"/>
+          <text class="layer-label" x="104" y="606">OPERATIONAL</text>
 
-          <!-- Compact components (no sublabels on this slide for clarity) -->
+          <!-- Components (positions from D2 + ELK) -->
           <g class="components">
-            <!-- Physical row -->
-            <g transform="translate(80,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">Frame</text></g>
-            <g transform="translate(360,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">Smart Lock</text></g>
-            <g transform="translate(640,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">GPS / IoT</text></g>
-            <g transform="translate(920,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">QR Code</text></g>
-            <g transform="translate(1200,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">Battery</text></g>
-            <!-- Digital row -->
-            <g transform="translate(80,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Mobile App</text></g>
-            <g transform="translate(440,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Backend Server</text></g>
-            <g transform="translate(800,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Payment Gateway</text></g>
-            <g transform="translate(1160,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Geofencing</text></g>
-            <!-- Ops row -->
-            <g transform="translate(80,640)"><rect class="component" width="440" height="110"/><text class="component-label" x="220" y="62">Rebal. Trucks</text></g>
-            <g transform="translate(560,640)"><rect class="component" width="440" height="110"/><text class="component-label" x="220" y="62">Maintenance Depot</text></g>
-            <g transform="translate(1040,640)"><rect class="component" width="440" height="110"/><text class="component-label" x="220" y="62">Field Operators</text></g>
+            <g transform="translate(142,142)"><rect class="component" width="89" height="66"/><text class="component-label" x="44.5" y="38">Frame</text></g>
+            <g transform="translate(281,142)"><rect class="component" width="126" height="66"/><text class="component-label" x="63" y="38">Smart Lock</text></g>
+            <g transform="translate(457,142)"><rect class="component" width="109" height="66"/><text class="component-label" x="54.5" y="38">GPS / IoT</text></g>
+            <g transform="translate(616,142)"><rect class="component" width="105" height="66"/><text class="component-label" x="52.5" y="38">QR Code</text></g>
+            <g transform="translate(771,142)"><rect class="component" width="99" height="66"/><text class="component-label" x="49.5" y="38">Battery</text></g>
+            <g transform="translate(142,388)"><rect class="component" width="123" height="66"/><text class="component-label" x="61.5" y="38">Mobile App</text></g>
+            <g transform="translate(315,388)"><rect class="component" width="156" height="66"/><text class="component-label" x="78" y="38">Backend Server</text></g>
+            <g transform="translate(521,388)"><rect class="component" width="174" height="66"/><text class="component-label" x="87" y="38">Payment Gateway</text></g>
+            <g transform="translate(745,388)"><rect class="component" width="126" height="66"/><text class="component-label" x="63" y="38">Geofencing</text></g>
+            <g transform="translate(142,634)"><rect class="component" width="140" height="66"/><text class="component-label" x="70" y="38">Rebal. Trucks</text></g>
+            <g transform="translate(332,634)"><rect class="component" width="181" height="66"/><text class="component-label" x="90.5" y="38">Maintenance Depot</text></g>
+            <g transform="translate(563,634)"><rect class="component" width="154" height="66"/><text class="component-label" x="77" y="38">Field Operators</text></g>
           </g>
 
-          <!-- Step 1: Open app → map of nearby bikes (App stays in Digital, ping out) -->
+          <!-- Step 1: open app — self-action callout on Mobile App, sits in
+               gap-A above the digital row -->
           <g class="fragment" data-fragment-index="0">
-            <path class="user-arrow" style="--len:180" d="M 240 380 C 240 320, 240 290, 240 270"/>
-            <circle cx="220" cy="380" r="18" class="user-step-bg"/>
-            <text class="user-step" x="220" y="385" text-anchor="middle">1</text>
-            <text class="user-step-label" x="252" y="356">open app · map shows nearby bikes</text>
+            <circle cx="155" cy="288" r="11" class="user-step-bg"/>
+            <text class="user-step" x="155" y="292" text-anchor="middle">1</text>
+            <text class="user-step-label" x="173" y="292">open app · map shows nearby bikes</text>
           </g>
 
-          <!-- Step 2: Walk to bike, scan QR -->
+          <!-- Step 2: scan QR — Mobile App → QR Code -->
           <g class="fragment" data-fragment-index="1">
-            <path class="user-arrow" style="--len:380" d="M 320 380 Q 700 300, 1040 230"/>
-            <circle cx="320" cy="380" r="18" class="user-step-bg"/>
-            <text class="user-step" x="320" y="385" text-anchor="middle">2</text>
-            <text class="user-step-label" x="650" y="318">scan QR code</text>
+            <path class="user-arrow" style="--len:392" marker-end="url(#arrow-red-2)" d="M 266.3 387.1 L 613.0 204.9"/>
+            <circle cx="272.0" cy="388.0" r="11" class="user-step-bg"/>
+            <text class="user-step" x="272.0" y="392.0" text-anchor="middle">2</text>
+            <text class="user-step-label" x="470.0" y="320.0">scan QR code</text>
           </g>
 
-          <!-- Step 3: Backend validates, sends unlock to smart lock via IoT -->
+          <!-- Step 3: validate · send unlock — Backend Server → Smart Lock -->
           <g class="fragment" data-fragment-index="2">
-            <path class="user-arrow" style="--len:420" d="M 600 380 Q 600 280, 480 230"/>
-            <circle cx="600" cy="380" r="18" class="user-step-bg"/>
-            <text class="user-step" x="600" y="385" text-anchor="middle">3</text>
-            <text class="user-step-label" x="488" y="304">validate · send unlock</text>
+            <path class="user-arrow" style="--len:177" marker-end="url(#arrow-red-2)" d="M 385.6 386.0 L 351.8 211.9"/>
+            <circle cx="382.0" cy="388.0" r="11" class="user-step-bg"/>
+            <text class="user-step" x="382.0" y="392.0" text-anchor="middle">3</text>
+            <text class="user-step-label" x="200.0" y="320.0">validate · send unlock</text>
           </g>
 
-          <!-- Step 4: Ride; bike GPS streams to backend -->
+          <!-- Step 4: stream GPS — GPS / IoT → Backend Server -->
           <g class="fragment" data-fragment-index="3">
-            <path class="user-arrow" style="--len:240" d="M 760 230 Q 760 305, 760 370"/>
-            <circle cx="760" cy="230" r="18" class="user-step-bg"/>
-            <text class="user-step" x="760" y="235" text-anchor="middle">4</text>
-            <text class="user-step-label" x="780" y="306">stream GPS during ride</text>
+            <path class="user-arrow" style="--len:194" marker-end="url(#arrow-red-2)" d="M 495.1 209.8 L 410.7 384.4"/>
+            <circle cx="495.0" cy="222.0" r="11" class="user-step-bg"/>
+            <text class="user-step" x="495.0" y="226.0" text-anchor="middle">4</text>
+            <text class="user-step-label" x="700.0" y="320.0">stream GPS during ride</text>
           </g>
 
-          <!-- Step 5: Park in geofenced zone; lock via app -->
+          <!-- Step 5: geofence-gated park & lock — Backend Server → Geofencing.
+               Manually routed through the gap below the digital row to skip
+               over Payment Gateway. -->
           <g class="fragment" data-fragment-index="4">
-            <path class="user-arrow" style="--len:480" d="M 760 380 Q 1000 360, 1320 380"/>
-            <circle cx="240" cy="430" r="18" class="user-step-bg"/>
-            <text class="user-step" x="240" y="435" text-anchor="middle">5</text>
-            <text class="user-step-label" x="900" y="362">geofence-gated park & lock</text>
-            <path class="user-arrow" style="--len:120" d="M 1320 380 Q 1320 300, 480 230"/>
+            <path class="user-arrow" style="--len:587" marker-end="url(#arrow-red-2)" d="M 393 454 V 540 H 808 V 454"/>
+            <circle cx="400.0" cy="470.0" r="11" class="user-step-bg"/>
+            <text class="user-step" x="400.0" y="474.0" text-anchor="middle">5</text>
+            <text class="user-step-label" x="700.0" y="558.0">geofence-gated park &amp; lock</text>
           </g>
 
-          <!-- Step 6: Fare calculated; payment -->
+          <!-- Step 6: fare → payment gateway — Backend Server → Payment Gateway -->
           <g class="fragment" data-fragment-index="5">
-            <path class="user-arrow" style="--len:200" d="M 760 410 Q 880 410, 960 410"/>
-            <circle cx="600" cy="430" r="18" class="user-step-bg"/>
-            <text class="user-step" x="600" y="435" text-anchor="middle">6</text>
-            <text class="user-step-label" x="800" y="402">fare → payment gateway</text>
+            <path class="user-arrow" style="--len:44" marker-end="url(#arrow-red-2)" d="M 473.0 421.0 L 517.0 421.0"/>
+            <circle cx="495.0" cy="421.0" r="11" class="user-step-bg"/>
+            <text class="user-step" x="495.0" y="425.0" text-anchor="middle">6</text>
+            <text class="user-step-label" x="495.0" y="365.0" text-anchor="middle">fare → payment gateway</text>
           </g>
 
-          <!-- Step 7: Optional report; operations dispatched -->
+          <!-- Step 7: report fault — Mobile App → Field Operators -->
           <g class="fragment" data-fragment-index="6">
-            <path class="user-arrow" style="--len:300" d="M 240 490 Q 240 580, 1260 640"/>
-            <circle cx="240" cy="490" r="18" class="user-step-bg"/>
-            <text class="user-step" x="240" y="495" text-anchor="middle">7</text>
-            <text class="user-step-label" x="640" y="588">report fault → field operators dispatched</text>
+            <path class="user-arrow" style="--len:360" marker-end="url(#arrow-red-2)" d="M 263.7 455.0 L 577.5 632.0"/>
+            <circle cx="272.0" cy="460.0" r="11" class="user-step-bg"/>
+            <text class="user-step" x="272.0" y="464.0" text-anchor="middle">7</text>
+            <text class="user-step-label" x="260.0" y="558.0">report fault → field operators dispatched</text>
           </g>
 
         </svg>

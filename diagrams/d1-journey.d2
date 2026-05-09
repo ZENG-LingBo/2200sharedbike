@@ -1,0 +1,99 @@
+# Diagram 1 · User Journey (slide 4)
+# Layered architecture (Physical / Digital / Operational) with seven
+# numbered step arrows tracing how a ride actually happens.
+# Rendered via:
+#   d2 --layout=elk --pad=24 d1-journey.d2 d1-journey.svg
+
+# Top-level vertical grid forces the three arch to stack
+# top-to-bottom. Each layer is a horizontal grid of components.
+arch: {
+  grid-rows: 3
+  # Wide grid-gap reserves vertical room between layer bands for the
+  # step-arrow labels (which sit in gap-A above DIGITAL and gap-B below).
+  grid-gap: 80
+  style.stroke-width: 0
+  style.fill: transparent
+
+  physical: PHYSICAL {
+    grid-columns: 5
+    grid-gap: 50
+    style: {
+      fill: "#EFE6D8"
+      stroke: "#C9BFAF"
+      stroke-width: 1
+      border-radius: 6
+    }
+    Frame
+    "Smart Lock"
+    "GPS / IoT"
+    "QR Code"
+    Battery
+  }
+
+  digital: DIGITAL {
+    grid-columns: 4
+    grid-gap: 50
+    style: {
+      fill: "#DCE3E8"
+      stroke: "#B5BEC4"
+      stroke-width: 1
+      border-radius: 6
+    }
+    "Mobile App"
+    "Backend Server"
+    "Payment Gateway"
+    Geofencing
+  }
+
+  operational: OPERATIONAL {
+    grid-columns: 3
+    grid-gap: 50
+    style: {
+      fill: "#EAE0D6"
+      stroke: "#C9BFAF"
+      stroke-width: 1
+      border-radius: 6
+    }
+    "Rebal. Trucks"
+    "Maintenance Depot"
+    "Field Operators"
+  }
+}
+
+# ---------------------------------------------------------------
+# Seven user-journey steps. Each edge label is prefixed with its
+# step number; post-processing wraps each in a .fragment group so
+# the deck's stroke-dashoffset reveal animation fires per →.
+# Step 1 ("open app · map shows nearby bikes") is a self-action
+# on Mobile App — represented as a label, no edge.
+# ---------------------------------------------------------------
+
+arch.digital."Mobile App" -> arch.physical."QR Code": "2 · scan QR code" {
+  style.stroke: "#C8553D"
+  style.stroke-width: 2
+}
+
+arch.digital."Backend Server" -> arch.physical."Smart Lock": "3 · validate · send unlock" {
+  style.stroke: "#C8553D"
+  style.stroke-width: 2
+}
+
+arch.physical."GPS / IoT" -> arch.digital."Backend Server": "4 · stream GPS during ride" {
+  style.stroke: "#C8553D"
+  style.stroke-width: 2
+}
+
+arch.digital."Backend Server" -> arch.digital.Geofencing: "5 · geofence-gated park & lock" {
+  style.stroke: "#C8553D"
+  style.stroke-width: 2
+}
+
+arch.digital."Backend Server" -> arch.digital."Payment Gateway": "6 · fare → payment gateway" {
+  style.stroke: "#C8553D"
+  style.stroke-width: 2
+}
+
+arch.digital."Mobile App" -> arch.operational."Field Operators": "7 · report fault → field operators dispatched" {
+  style.stroke: "#C8553D"
+  style.stroke-width: 2
+}
