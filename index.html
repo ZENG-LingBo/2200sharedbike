@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920, initial-scale=1">
+  <title>Shared-Bike Systems · A Two-Lens Analysis</title>
+  <link rel="stylesheet" href="css/theme-academic.css">
+  <link rel="stylesheet" href="css/diagrams.css">
+</head>
+<body>
+<div class="deck">
+  <div class="slides">
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 1 · Title + hook stat                       0:00 – 0:15 -->
+    <!-- ============================================================ -->
+    <section class="title-slide" data-timestamp="0:00 – 0:15"
+             data-notes="Hook: read the stat slowly. Hold a beat after '23 million'. Don't smile through this — it's the catastrophe that motivates the whole talk.">
+      <div class="eyebrow">DESN2200 · Systems Mapping Assignment</div>
+      <h1>The Shared-Bike Collapse<br><span class="muted">— a systems-thinking case</span></h1>
+      <div class="stat fragment fade-only">23 million bikes.</div>
+      <div class="subtitle fragment fade-only">Deployed across 200 Chinese cities by 2017. Within two years, billions of yuan lost, 12 million unrefunded deposits, 300,000 tons of scrap metal, and bike graveyards visible from the air.</div>
+      <div class="source">Sources: Roland Berger, CKGSB, Reuters · 2017–2019</div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 2 · Two-lens framing                        0:15 – 0:25 -->
+    <!-- ============================================================ -->
+    <section data-timestamp="0:15 – 0:25"
+             data-notes="Set the frame. Two diagrams, two lenses. Don't over-explain shared bikes — the audience knows what they are.">
+      <div class="eyebrow">FRAMING</div>
+      <h2>Two lenses on one system</h2>
+      <p class="lede">Why this system collapsed — and how design can fix the next one — only becomes visible when you look at it from <em>two</em> directions at once.</p>
+      <div class="split">
+        <div class="panel left fragment">
+          <div class="label">Diagram 1</div>
+          <h3>Technical mechanism</h3>
+          <p>Three layers: the bike, the cloud, the field. How a ride actually happens, and where the system steers user behaviour.</p>
+        </div>
+        <div class="panel right fragment">
+          <div class="label">Diagram 2</div>
+          <h3>Social dynamics</h3>
+          <p>Causal-loop diagram with four canonical archetypes embedded. Why trust collapses, why bikes get vandalised, and which loops the survivors broke.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 3 · Architecture skeleton (3 layers)        0:25 – 0:50 -->
+    <!-- ============================================================ -->
+    <section class="diagram-slide" data-timestamp="0:25 – 0:50"
+             data-notes="Walk top → bottom. Physical = what the user touches. Digital = what mediates. Operational = what supports. Components animate in left to right.">
+      <div class="header">
+        <div class="tag">DIAGRAM 1 · ARCHITECTURE</div>
+        <h2>Three layers, one ride</h2>
+      </div>
+      <div class="canvas">
+        <svg class="diagram arch-svg" viewBox="0 0 1600 880" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#C8553D"/>
+            </marker>
+            <marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+            </marker>
+          </defs>
+
+          <!-- Layer 1: Physical -->
+          <g class="fragment fade-only" data-fragment-index="0">
+            <rect class="layer-band physical" x="40" y="40" width="1520" height="220"/>
+            <text class="layer-label" x="62" y="70">PHYSICAL · the bike</text>
+            <text class="layer-sub" x="62" y="90">what the user touches</text>
+
+            <!-- 5 components in physical layer -->
+            <g transform="translate(80,120)">
+              <rect class="component" width="240" height="110"/>
+              <text class="component-label" x="120" y="50">Frame</text>
+              <text class="component-sub" x="120" y="74">aluminium / steel</text>
+              <text class="component-sub" x="120" y="92">solid tyres</text>
+            </g>
+            <g transform="translate(360,120)">
+              <rect class="component" width="240" height="110"/>
+              <text class="component-label" x="120" y="50">Smart Lock</text>
+              <text class="component-sub" x="120" y="74">servo + bluetooth</text>
+              <text class="component-sub" x="120" y="92">tamper sensor</text>
+            </g>
+            <g transform="translate(640,120)">
+              <rect class="component" width="240" height="110"/>
+              <text class="component-label" x="120" y="50">GPS / IoT Module</text>
+              <text class="component-sub" x="120" y="74">cellular uplink</text>
+              <text class="component-sub" x="120" y="92">streams location</text>
+            </g>
+            <g transform="translate(920,120)">
+              <rect class="component" width="240" height="110"/>
+              <text class="component-label" x="120" y="50">QR Code</text>
+              <text class="component-sub" x="120" y="74">unique bike ID</text>
+              <text class="component-sub" x="120" y="92">scan-to-unlock</text>
+            </g>
+            <g transform="translate(1200,120)">
+              <rect class="component" width="240" height="110"/>
+              <text class="component-label" x="120" y="50">Battery</text>
+              <text class="component-sub" x="120" y="74">dynamo / cell</text>
+              <text class="component-sub" x="120" y="92">powers lock + IoT</text>
+            </g>
+          </g>
+
+          <!-- Layer 2: Digital -->
+          <g class="fragment fade-only" data-fragment-index="1">
+            <rect class="layer-band digital" x="40" y="300" width="1520" height="220"/>
+            <text class="layer-label" x="62" y="330">DIGITAL · the cloud</text>
+            <text class="layer-sub" x="62" y="350">what mediates</text>
+
+            <g transform="translate(80,380)">
+              <rect class="component" width="320" height="110"/>
+              <text class="component-label" x="160" y="50">Mobile App</text>
+              <text class="component-sub" x="160" y="74">map · scan · pay · report</text>
+              <text class="component-sub" x="160" y="92">credit-score visible</text>
+            </g>
+            <g transform="translate(440,380)">
+              <rect class="component" width="320" height="110"/>
+              <text class="component-label" x="160" y="50">Backend Server</text>
+              <text class="component-sub" x="160" y="74">auth · ride state · fleet</text>
+              <text class="component-sub" x="160" y="92">cloud orchestration</text>
+            </g>
+            <g transform="translate(800,380)">
+              <rect class="component" width="320" height="110"/>
+              <text class="component-label" x="160" y="50">Payment Gateway</text>
+              <text class="component-sub" x="160" y="74">Alipay · WeChat Pay</text>
+              <text class="component-sub" x="160" y="92">fare + deposit</text>
+            </g>
+            <g transform="translate(1160,380)">
+              <rect class="component" width="320" height="110"/>
+              <text class="component-label" x="160" y="50">Geofencing Engine</text>
+              <text class="component-sub" x="160" y="74">parking zones</text>
+              <text class="component-sub" x="160" y="92">fines + ride-end gate</text>
+            </g>
+          </g>
+
+          <!-- Layer 3: Operational -->
+          <g class="fragment fade-only" data-fragment-index="2">
+            <rect class="layer-band ops" x="40" y="560" width="1520" height="220"/>
+            <text class="layer-label" x="62" y="590">OPERATIONAL · the field</text>
+            <text class="layer-sub" x="62" y="610">what supports</text>
+
+            <g transform="translate(80,640)">
+              <rect class="component" width="440" height="110"/>
+              <text class="component-label" x="220" y="50">Rebalancing Trucks</text>
+              <text class="component-sub" x="220" y="74">demand-driven redistribution</text>
+              <text class="component-sub" x="220" y="92">overnight + peak shifts</text>
+            </g>
+            <g transform="translate(560,640)">
+              <rect class="component" width="440" height="110"/>
+              <text class="component-label" x="220" y="50">Maintenance Depot</text>
+              <text class="component-sub" x="220" y="74">repair · spare parts · scrap</text>
+              <text class="component-sub" x="220" y="92">fault-triage queue</text>
+            </g>
+            <g transform="translate(1040,640)">
+              <rect class="component" width="440" height="110"/>
+              <text class="component-label" x="220" y="50">Field Operators</text>
+              <text class="component-sub" x="220" y="74">collection · clean-up · rescue</text>
+              <text class="component-sub" x="220" y="92">credit-deduction enforcement</text>
+            </g>
+          </g>
+
+        </svg>
+      </div>
+      <p class="caption">
+        <span class="fragment fade-only">Three layers stacked the way a user encounters them — physical first, mediated by digital, supported by operational.</span>
+      </p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 4 · User journey overlay 1–7                0:50 – 1:25 -->
+    <!-- ============================================================ -->
+    <section class="diagram-slide" data-timestamp="0:50 – 1:25"
+             data-notes="Walk steps 1–7. Each press of arrow advances one numbered step. The arrows trace the data flow across the three layers. Pace ≈ 5s per step.">
+      <div class="header">
+        <div class="tag">DIAGRAM 1 · USER JOURNEY</div>
+        <h2>How a ride actually happens</h2>
+      </div>
+      <div class="canvas">
+        <svg class="diagram arch-svg" viewBox="0 0 1600 880" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrow-red-2" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#C8553D"/>
+            </marker>
+          </defs>
+
+          <!-- Reuse layer skeleton (always visible on this slide) -->
+          <rect class="layer-band physical" x="40" y="40" width="1520" height="220"/>
+          <text class="layer-label" x="62" y="70">PHYSICAL</text>
+          <rect class="layer-band digital" x="40" y="300" width="1520" height="220"/>
+          <text class="layer-label" x="62" y="330">DIGITAL</text>
+          <rect class="layer-band ops" x="40" y="560" width="1520" height="220"/>
+          <text class="layer-label" x="62" y="590">OPERATIONAL</text>
+
+          <!-- Compact components (no sublabels on this slide for clarity) -->
+          <g class="components">
+            <!-- Physical row -->
+            <g transform="translate(80,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">Frame</text></g>
+            <g transform="translate(360,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">Smart Lock</text></g>
+            <g transform="translate(640,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">GPS / IoT</text></g>
+            <g transform="translate(920,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">QR Code</text></g>
+            <g transform="translate(1200,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">Battery</text></g>
+            <!-- Digital row -->
+            <g transform="translate(80,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Mobile App</text></g>
+            <g transform="translate(440,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Backend Server</text></g>
+            <g transform="translate(800,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Payment Gateway</text></g>
+            <g transform="translate(1160,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Geofencing</text></g>
+            <!-- Ops row -->
+            <g transform="translate(80,640)"><rect class="component" width="440" height="110"/><text class="component-label" x="220" y="62">Rebal. Trucks</text></g>
+            <g transform="translate(560,640)"><rect class="component" width="440" height="110"/><text class="component-label" x="220" y="62">Maintenance Depot</text></g>
+            <g transform="translate(1040,640)"><rect class="component" width="440" height="110"/><text class="component-label" x="220" y="62">Field Operators</text></g>
+          </g>
+
+          <!-- Step 1: Open app → map of nearby bikes (App stays in Digital, ping out) -->
+          <g class="fragment" data-fragment-index="0">
+            <path class="user-arrow" style="--len:180" d="M 240 380 C 240 320, 240 290, 240 270"/>
+            <circle cx="220" cy="380" r="18" class="user-step-bg"/>
+            <text class="user-step" x="220" y="385" text-anchor="middle">1</text>
+            <text class="user-step-label" x="252" y="356">open app · map shows nearby bikes</text>
+          </g>
+
+          <!-- Step 2: Walk to bike, scan QR -->
+          <g class="fragment" data-fragment-index="1">
+            <path class="user-arrow" style="--len:380" d="M 320 380 Q 700 300, 1040 230"/>
+            <circle cx="320" cy="380" r="18" class="user-step-bg"/>
+            <text class="user-step" x="320" y="385" text-anchor="middle">2</text>
+            <text class="user-step-label" x="650" y="318">scan QR code</text>
+          </g>
+
+          <!-- Step 3: Backend validates, sends unlock to smart lock via IoT -->
+          <g class="fragment" data-fragment-index="2">
+            <path class="user-arrow" style="--len:420" d="M 600 380 Q 600 280, 480 230"/>
+            <circle cx="600" cy="380" r="18" class="user-step-bg"/>
+            <text class="user-step" x="600" y="385" text-anchor="middle">3</text>
+            <text class="user-step-label" x="488" y="304">validate · send unlock</text>
+          </g>
+
+          <!-- Step 4: Ride; bike GPS streams to backend -->
+          <g class="fragment" data-fragment-index="3">
+            <path class="user-arrow" style="--len:240" d="M 760 230 Q 760 305, 760 370"/>
+            <circle cx="760" cy="230" r="18" class="user-step-bg"/>
+            <text class="user-step" x="760" y="235" text-anchor="middle">4</text>
+            <text class="user-step-label" x="780" y="306">stream GPS during ride</text>
+          </g>
+
+          <!-- Step 5: Park in geofenced zone; lock via app -->
+          <g class="fragment" data-fragment-index="4">
+            <path class="user-arrow" style="--len:480" d="M 760 380 Q 1000 360, 1320 380"/>
+            <circle cx="240" cy="430" r="18" class="user-step-bg"/>
+            <text class="user-step" x="240" y="435" text-anchor="middle">5</text>
+            <text class="user-step-label" x="900" y="362">geofence-gated park & lock</text>
+            <path class="user-arrow" style="--len:120" d="M 1320 380 Q 1320 300, 480 230"/>
+          </g>
+
+          <!-- Step 6: Fare calculated; payment -->
+          <g class="fragment" data-fragment-index="5">
+            <path class="user-arrow" style="--len:200" d="M 760 410 Q 880 410, 960 410"/>
+            <circle cx="600" cy="430" r="18" class="user-step-bg"/>
+            <text class="user-step" x="600" y="435" text-anchor="middle">6</text>
+            <text class="user-step-label" x="800" y="402">fare → payment gateway</text>
+          </g>
+
+          <!-- Step 7: Optional report; operations dispatched -->
+          <g class="fragment" data-fragment-index="6">
+            <path class="user-arrow" style="--len:300" d="M 240 490 Q 240 580, 1260 640"/>
+            <circle cx="240" cy="490" r="18" class="user-step-bg"/>
+            <text class="user-step" x="240" y="495" text-anchor="middle">7</text>
+            <text class="user-step-label" x="640" y="588">report fault → field operators dispatched</text>
+          </g>
+
+        </svg>
+      </div>
+      <p class="caption muted">Press → to advance through the seven-step ride. Each arrow traces a real data or resource flow between layers.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 5 · Guidance mechanism badges                1:25 – 1:50 -->
+    <!-- ============================================================ -->
+    <section class="diagram-slide" data-timestamp="1:25 – 1:50"
+             data-notes="Four categories of guidance — forcing functions, nudges, feedback, rewards. Read each colour. Close with: 'these mechanisms are how the system shapes user behaviour — and their presence or absence determines whether the business survives.'">
+      <div class="header">
+        <div class="tag">DIAGRAM 1 · GUIDANCE MECHANISMS</div>
+        <h2>How the architecture shapes behaviour</h2>
+      </div>
+      <div class="canvas">
+        <svg class="diagram arch-svg" viewBox="0 0 1600 880" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrow-red-3" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#C8553D"/>
+            </marker>
+          </defs>
+
+          <rect class="layer-band physical" x="40" y="40" width="1520" height="220"/>
+          <text class="layer-label" x="62" y="70">PHYSICAL</text>
+          <rect class="layer-band digital" x="40" y="300" width="1520" height="220"/>
+          <text class="layer-label" x="62" y="330">DIGITAL</text>
+          <rect class="layer-band ops" x="40" y="560" width="1520" height="220"/>
+          <text class="layer-label" x="62" y="590">OPERATIONAL</text>
+
+          <!-- compact components grid (faded so badges read clearly) -->
+          <g opacity="0.55">
+            <g transform="translate(80,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">Frame</text></g>
+            <g transform="translate(360,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">Smart Lock</text></g>
+            <g transform="translate(640,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">GPS / IoT</text></g>
+            <g transform="translate(920,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">QR Code</text></g>
+            <g transform="translate(1200,120)"><rect class="component" width="240" height="110"/><text class="component-label" x="120" y="62">Battery</text></g>
+            <g transform="translate(80,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Mobile App</text></g>
+            <g transform="translate(440,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Backend Server</text></g>
+            <g transform="translate(800,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Payment Gateway</text></g>
+            <g transform="translate(1160,380)"><rect class="component" width="320" height="110"/><text class="component-label" x="160" y="62">Geofencing</text></g>
+            <g transform="translate(80,640)"><rect class="component" width="440" height="110"/><text class="component-label" x="220" y="62">Rebal. Trucks</text></g>
+            <g transform="translate(560,640)"><rect class="component" width="440" height="110"/><text class="component-label" x="220" y="62">Maintenance Depot</text></g>
+            <g transform="translate(1040,640)"><rect class="component" width="440" height="110"/><text class="component-label" x="220" y="62">Field Operators</text></g>
+          </g>
+
+          <!-- Forcing functions (red) -->
+          <g class="fragment" data-fragment-index="0">
+            <rect class="badge badge-forcing" x="1180" y="246" width="370" height="40"/>
+            <text class="badge-icon forcing" x="1196" y="272">●</text>
+            <text class="badge-text" x="1218" y="272">FORCING · geofence gates the ride end</text>
+
+            <rect class="badge badge-forcing" x="80" y="506" width="340" height="40"/>
+            <text class="badge-icon forcing" x="96" y="532">●</text>
+            <text class="badge-text" x="118" y="532">FORCING · app-mandatory unlock</text>
+
+            <rect class="badge badge-forcing" x="440" y="506" width="370" height="40"/>
+            <text class="badge-icon forcing" x="456" y="532">●</text>
+            <text class="badge-text" x="478" y="532">FORCING · credit threshold blocks bad users</text>
+          </g>
+
+          <!-- Nudges (gold) -->
+          <g class="fragment" data-fragment-index="1">
+            <rect class="badge badge-nudge" x="80" y="246" width="320" height="40"/>
+            <text class="badge-icon nudge" x="96" y="272">●</text>
+            <text class="badge-text" x="118" y="272">NUDGE · map highlights nearest bike</text>
+
+            <rect class="badge badge-nudge" x="820" y="506" width="320" height="40"/>
+            <text class="badge-icon nudge" x="836" y="532">●</text>
+            <text class="badge-text" x="858" y="532">NUDGE · membership pricing</text>
+          </g>
+
+          <!-- Feedback (slate) -->
+          <g class="fragment" data-fragment-index="2">
+            <rect class="badge badge-feedback" x="412" y="246" width="320" height="40"/>
+            <text class="badge-icon feedback" x="428" y="272">●</text>
+            <text class="badge-text" x="450" y="272">FEEDBACK · live fare ticker during ride</text>
+
+            <rect class="badge badge-feedback" x="744" y="246" width="320" height="40"/>
+            <text class="badge-icon feedback" x="760" y="272">●</text>
+            <text class="badge-text" x="782" y="272">FEEDBACK · credit score visible in app</text>
+          </g>
+
+          <!-- Rewards (green) -->
+          <g class="fragment" data-fragment-index="3">
+            <rect class="badge badge-reward" x="1040" y="800" width="380" height="40"/>
+            <text class="badge-icon reward" x="1056" y="826">●</text>
+            <text class="badge-text" x="1078" y="826">REWARD · fault-report → credit bonus</text>
+
+            <rect class="badge badge-reward" x="80" y="800" width="380" height="40"/>
+            <text class="badge-icon reward" x="96" y="826">●</text>
+            <text class="badge-text" x="118" y="826">REWARD · civilised-cycling streak</text>
+          </g>
+
+        </svg>
+      </div>
+      <div class="kicker fragment" data-fragment-index="4">
+        These mechanisms are how the system shapes user behaviour — and their <em>presence or absence</em> is what separated the survivors from the collapses.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 6 · Architecture improvements                1:50 – 2:15 -->
+    <!-- ============================================================ -->
+    <section data-timestamp="1:50 – 2:15"
+             data-notes="Four concrete architectural upgrades. Frame: 'the architecture should embed more guidance into the physical layer, not just the digital layer.'">
+      <div class="eyebrow">DIAGRAM 1 · IMPROVEMENTS</div>
+      <h2>Where the architecture should grow</h2>
+      <div class="improvements">
+        <div class="item fragment">
+          <div class="num">01 · Physical layer</div>
+          <h3>Damage / vibration sensors on every bike</h3>
+          <p>Real-time fleet-health telemetry shifts maintenance from reactive complaint-driven to predictive fault-triage.</p>
+        </div>
+        <div class="item fragment">
+          <div class="num">02 · Physical-Digital interface</div>
+          <h3>Mandatory docking infrastructure in dense zones</h3>
+          <p>Reduces clutter at source instead of fining it after the fact. Fixes the externality the regulator otherwise has to cap.</p>
+        </div>
+        <div class="item fragment">
+          <div class="num">03 · Physical layer</div>
+          <h3>Battery-swap stations for the e-bike pivot</h3>
+          <p>Higher per-ride margin, longer dwell window, and a credible path off the unit-economics knife-edge that broke Ofo.</p>
+        </div>
+        <div class="item fragment">
+          <div class="num">04 · Operational layer</div>
+          <h3>Real-time demand dashboard for operators</h3>
+          <p>Smarter rebalancing decisions, lower truck-mileage cost, fewer over-saturated cluster-zones.</p>
+        </div>
+      </div>
+      <div class="kicker fragment">The architecture should embed more guidance into the <em>physical</em> layer — not just the digital one.</div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 7 · CLD overview                             2:15 – 2:35 -->
+    <!-- ============================================================ -->
+    <section class="diagram-slide" data-timestamp="2:15 – 2:35"
+             data-notes="Show all variables, no loops yet. Set up: 'this diagram shows the behavioural feedback loops that determine whether shared bikes thrive or self-destruct.'">
+      <div class="header">
+        <div class="tag">DIAGRAM 2 · SOCIAL CLD</div>
+        <h2>The variables in the social system</h2>
+      </div>
+      <div class="canvas">
+        <!-- Shared CLD SVG (used across slides 7–13). All variables visible; loops added later. -->
+        <svg class="diagram cld-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+
+          <defs>
+            <marker id="arrow-red-cld" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#C8553D"/>
+            </marker>
+            <marker id="arrow-slate" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#3D5A6C"/>
+            </marker>
+            <marker id="arrow-gold" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#A78A4D"/>
+            </marker>
+          </defs>
+
+          <!-- Variables (12 nodes) -->
+          <g class="vars">
+            <g transform="translate(220,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Bike Availability</text></g>
+            <g transform="translate(490,80)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Sense of Ownership</text></g>
+            <g transform="translate(760,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Individual Care</text></g>
+            <g transform="translate(700,360)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Fleet Quality</text></g>
+            <g transform="translate(430,260)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Satisfaction</text></g>
+
+            <g transform="translate(1080,180)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Vandalism</text></g>
+            <g transform="translate(1320,290)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Social Tolerance</text></g>
+
+            <g transform="translate(990,440)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Maintenance Cost</text></g>
+            <g transform="translate(1240,500)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Cash Crunch</text></g>
+            <g transform="translate(1320,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Refund Delays</text></g>
+            <g transform="translate(1060,720)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Panic</text></g>
+
+            <g transform="translate(450,540)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Urban Clutter</text></g>
+            <g transform="translate(220,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Public Complaints</text></g>
+            <g transform="translate(60,460)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Government Caps</text></g>
+
+            <!-- Designed-loop nodes (guidance loops) -->
+            <g transform="translate(1340,90)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Credit Penalty</text></g>
+            <g transform="translate(60,300)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Geofence Fine</text></g>
+            <g transform="translate(720,560)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Reports</text></g>
+            <g transform="translate(450,700)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Recovery Speed</text></g>
+          </g>
+        </svg>
+      </div>
+      <p class="caption muted">Variables only. The next five slides walk through which loops bind them — and which archetypes those loops embody.</p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 8 · B1 · Tragedy of the Commons             2:35 – 2:50 -->
+    <!-- ============================================================ -->
+    <section class="diagram-slide" data-timestamp="2:35 – 2:50"
+             data-notes="The canonical shared-resource problem. Bikes are plentiful and cheap → no felt ownership → care drops → quality drops → satisfaction drops. Cite Mobike 200K bikes lost in one year.">
+      <div class="header">
+        <div class="tag">CLD · LOOP B1</div>
+        <h2>Tragedy of the Commons</h2>
+      </div>
+      <div class="canvas">
+        <svg class="diagram cld-svg focus-B1" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrow-red-b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C8553D"/></marker>
+            <marker id="arrow-slate-b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3D5A6C"/></marker>
+          </defs>
+
+          <!-- Faded backdrop nodes -->
+          <g opacity="0.35">
+            <g transform="translate(1080,180)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Vandalism</text></g>
+            <g transform="translate(1320,290)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Social Tolerance</text></g>
+            <g transform="translate(990,440)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Maintenance Cost</text></g>
+            <g transform="translate(1240,500)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Cash Crunch</text></g>
+            <g transform="translate(1320,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Refund Delays</text></g>
+            <g transform="translate(1060,720)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Panic</text></g>
+            <g transform="translate(450,540)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Urban Clutter</text></g>
+            <g transform="translate(220,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Public Complaints</text></g>
+            <g transform="translate(60,460)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Government Caps</text></g>
+            <g transform="translate(1340,90)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Credit Penalty</text></g>
+            <g transform="translate(60,300)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Geofence Fine</text></g>
+            <g transform="translate(720,560)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Reports</text></g>
+            <g transform="translate(450,700)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Recovery Speed</text></g>
+          </g>
+
+          <!-- Active B1 nodes -->
+          <g>
+            <g transform="translate(220,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Bike Availability</text></g>
+            <g transform="translate(490,80)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Sense of Ownership</text></g>
+            <g transform="translate(760,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Individual Care</text></g>
+            <g transform="translate(700,360)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Fleet Quality</text></g>
+            <g transform="translate(430,260)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Satisfaction</text></g>
+          </g>
+
+          <!-- B1 loop arrows (drawn with stroke-dashoffset) -->
+          <g class="fragment" data-fragment-index="0">
+            <path class="loop balancing l-B1" style="--len:300" d="M 380 170 Q 460 110, 490 110"/>
+            <text class="polarity neg" x="450" y="135">−</text>
+
+            <path class="loop balancing l-B1" style="--len:280" d="M 690 110 Q 760 130, 800 160"/>
+            <text class="polarity pos" x="745" y="125">+</text>
+
+            <path class="loop balancing l-B1" style="--len:280" d="M 850 220 Q 850 290, 820 360"/>
+            <text class="polarity pos" x="870" y="295">+</text>
+
+            <path class="loop balancing l-B1" style="--len:300" d="M 700 380 Q 600 360, 540 320"/>
+            <text class="polarity pos" x="610" y="358">+</text>
+
+            <path class="loop balancing l-B1" style="--len:340" d="M 430 290 Q 320 280, 280 220"/>
+            <text class="polarity pos" x="320" y="263">+</text>
+
+            <!-- closing arrow back to Bike Availability (long curve, balancing/negative net) -->
+            <path class="loop balancing l-B1" style="--len:520" d="M 320 220 Q 260 180, 280 160"/>
+          </g>
+
+          <!-- Loop ID badge -->
+          <g class="fragment fade-only" data-fragment-index="0">
+            <circle class="loop-id-circle balancing" cx="540" cy="190" r="26" fill="#FAF8F4"/>
+            <text class="loop-id balancing" x="540" y="198">B1</text>
+          </g>
+
+          <!-- Archetype pill -->
+          <g class="fragment fade-only" data-fragment-index="1">
+            <rect class="archetype-pill balancing" x="400" y="430" width="320" height="36"/>
+            <text class="archetype-text" x="560" y="454">Tragedy of the Commons</text>
+          </g>
+
+        </svg>
+      </div>
+      <p class="caption fragment fade-only" data-fragment-index="1">
+        <span class="data">Mobike</span> lost <strong>200,000 bikes to theft and vandalism</strong> in a single year. The shared resource degraded faster than any single user felt responsible to prevent.
+      </p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 9 · R1 · Damage spiral                       2:50 – 3:05 -->
+    <!-- ============================================================ -->
+    <section class="diagram-slide" data-timestamp="2:50 – 3:05"
+             data-notes="Drifting Goals / Broken Windows. Visible damage normalises further damage. GoBee France shut down after 4 months from this exact dynamic.">
+      <div class="header">
+        <div class="tag">CLD · LOOP R1</div>
+        <h2>Damage Spiral</h2>
+      </div>
+      <div class="canvas">
+        <svg class="diagram cld-svg focus-R1" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrow-red-r1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C8553D"/></marker>
+          </defs>
+
+          <g opacity="0.35">
+            <g transform="translate(220,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Bike Availability</text></g>
+            <g transform="translate(490,80)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Sense of Ownership</text></g>
+            <g transform="translate(760,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Individual Care</text></g>
+            <g transform="translate(430,260)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Satisfaction</text></g>
+            <g transform="translate(990,440)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Maintenance Cost</text></g>
+            <g transform="translate(1240,500)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Cash Crunch</text></g>
+            <g transform="translate(1320,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Refund Delays</text></g>
+            <g transform="translate(1060,720)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Panic</text></g>
+            <g transform="translate(450,540)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Urban Clutter</text></g>
+            <g transform="translate(220,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Public Complaints</text></g>
+            <g transform="translate(60,460)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Government Caps</text></g>
+            <g transform="translate(1340,90)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Credit Penalty</text></g>
+            <g transform="translate(60,300)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Geofence Fine</text></g>
+            <g transform="translate(720,560)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Reports</text></g>
+            <g transform="translate(450,700)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Recovery Speed</text></g>
+          </g>
+
+          <g>
+            <g transform="translate(700,360)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Fleet Quality</text></g>
+            <g transform="translate(1080,180)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Vandalism</text></g>
+            <g transform="translate(1320,290)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Social Tolerance</text></g>
+          </g>
+
+          <g class="fragment" data-fragment-index="0">
+            <!-- Vandalism → Social Tolerance (+) -->
+            <path class="loop reinforcing l-R1" style="--len:280" d="M 1280 220 Q 1380 240, 1420 290"/>
+            <text class="polarity pos" x="1380" y="240">+</text>
+            <!-- Social Tolerance → Vandalism (+, reinforces) -->
+            <path class="loop reinforcing l-R1" style="--len:300" d="M 1400 290 Q 1340 240, 1280 230"/>
+            <text class="polarity pos" x="1320" y="280">+</text>
+            <!-- Vandalism → Fleet Quality (-) (side effect) -->
+            <path class="loop reinforcing l-R1" style="--len:340" d="M 1170 240 Q 980 290, 880 380"/>
+            <text class="polarity neg" x="1010" y="305">−</text>
+          </g>
+
+          <g class="fragment fade-only" data-fragment-index="0">
+            <circle class="loop-id-circle reinforcing" cx="1340" cy="220" r="26" fill="#FAF8F4"/>
+            <text class="loop-id" x="1340" y="228">R1</text>
+          </g>
+
+          <g class="fragment fade-only" data-fragment-index="1">
+            <rect class="archetype-pill" x="1130" y="380" width="380" height="36"/>
+            <text class="archetype-text" x="1320" y="404">Drifting Goals · Broken Windows</text>
+          </g>
+        </svg>
+      </div>
+      <p class="caption fragment fade-only" data-fragment-index="1">
+        <span class="data">GoBee</span> shut down its France operation after <strong>just four months</strong> when half its fleet was destroyed. Visible damage rewires what users believe is normal.
+      </p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 10 · R3 · Trust collapse                     3:05 – 3:15 -->
+    <!-- ============================================================ -->
+    <section class="diagram-slide" data-timestamp="3:05 – 3:15"
+             data-notes="Fixes That Fail. The 'fix' to the cash crunch — cutting service and stalling refunds — caused the panic that destroyed the company. Ofo lost $230M in deposits, 12M users.">
+      <div class="header">
+        <div class="tag">CLD · LOOP R3</div>
+        <h2>Trust Collapse</h2>
+      </div>
+      <div class="canvas">
+        <svg class="diagram cld-svg focus-R3" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrow-red-r3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C8553D"/></marker>
+          </defs>
+
+          <g opacity="0.35">
+            <g transform="translate(220,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Bike Availability</text></g>
+            <g transform="translate(490,80)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Sense of Ownership</text></g>
+            <g transform="translate(760,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Individual Care</text></g>
+            <g transform="translate(430,260)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Satisfaction</text></g>
+            <g transform="translate(1080,180)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Vandalism</text></g>
+            <g transform="translate(1320,290)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Social Tolerance</text></g>
+            <g transform="translate(450,540)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Urban Clutter</text></g>
+            <g transform="translate(220,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Public Complaints</text></g>
+            <g transform="translate(60,460)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Government Caps</text></g>
+            <g transform="translate(1340,90)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Credit Penalty</text></g>
+            <g transform="translate(60,300)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Geofence Fine</text></g>
+            <g transform="translate(720,560)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Reports</text></g>
+            <g transform="translate(450,700)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Recovery Speed</text></g>
+          </g>
+
+          <g>
+            <g transform="translate(700,360)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Fleet Quality</text></g>
+            <g transform="translate(990,440)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Maintenance Cost</text></g>
+            <g transform="translate(1240,500)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Cash Crunch</text></g>
+            <g transform="translate(1320,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Refund Delays</text></g>
+            <g transform="translate(1060,720)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Panic</text></g>
+          </g>
+
+          <g class="fragment" data-fragment-index="0">
+            <!-- Maintenance Cost → Cash Crunch (+) -->
+            <path class="loop reinforcing l-R3" style="--len:280" d="M 1190 480 Q 1230 490, 1240 500"/>
+            <text class="polarity pos" x="1208" y="478">+</text>
+            <!-- Cash Crunch → Refund Delays (+) -->
+            <path class="loop reinforcing l-R3" style="--len:280" d="M 1340 560 Q 1380 600, 1410 640"/>
+            <text class="polarity pos" x="1380" y="600">+</text>
+            <!-- Refund Delays → User Panic (+) -->
+            <path class="loop reinforcing l-R3" style="--len:300" d="M 1320 700 Q 1240 740, 1170 740"/>
+            <text class="polarity pos" x="1240" y="725">+</text>
+            <!-- User Panic → Cash Crunch (+, closes loop) -->
+            <path class="loop reinforcing l-R3" style="--len:340" d="M 1240 720 Q 1320 640, 1340 560"/>
+            <text class="polarity pos" x="1300" y="640">+</text>
+            <!-- Maintenance Cost connects from Fleet Quality (-) -->
+            <path class="loop reinforcing l-R3" style="--len:280" d="M 900 400 Q 950 420, 990 460"/>
+            <text class="polarity neg" x="930" y="410">−</text>
+          </g>
+
+          <g class="fragment fade-only" data-fragment-index="0">
+            <circle class="loop-id-circle reinforcing" cx="1280" cy="600" r="26" fill="#FAF8F4"/>
+            <text class="loop-id" x="1280" y="608">R3</text>
+          </g>
+
+          <g class="fragment fade-only" data-fragment-index="1">
+            <rect class="archetype-pill" x="1140" y="800" width="280" height="36"/>
+            <text class="archetype-text" x="1280" y="824">Fixes That Fail</text>
+          </g>
+        </svg>
+      </div>
+      <p class="caption fragment fade-only" data-fragment-index="1">
+        <span class="data">Ofo</span> took <strong>$230M in deposits from 12M users</strong> — none recoverable. The "fix" to the cash crunch (stall refunds) caused the panic that ended the company.
+      </p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 11 · B2 · Regulatory backlash                3:15 – 3:25 -->
+    <!-- ============================================================ -->
+    <section class="diagram-slide" data-timestamp="3:15 – 3:25"
+             data-notes="Limits to Growth. The street can only absorb so many bikes before complaint volume forces a regulator response. Beijing capped at 2.3M in 2017.">
+      <div class="header">
+        <div class="tag">CLD · LOOP B2</div>
+        <h2>Regulatory Backlash</h2>
+      </div>
+      <div class="canvas">
+        <svg class="diagram cld-svg focus-B2" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrow-slate-b2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3D5A6C"/></marker>
+          </defs>
+
+          <g opacity="0.35">
+            <g transform="translate(490,80)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Sense of Ownership</text></g>
+            <g transform="translate(760,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Individual Care</text></g>
+            <g transform="translate(700,360)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Fleet Quality</text></g>
+            <g transform="translate(430,260)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Satisfaction</text></g>
+            <g transform="translate(1080,180)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Vandalism</text></g>
+            <g transform="translate(1320,290)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Social Tolerance</text></g>
+            <g transform="translate(990,440)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Maintenance Cost</text></g>
+            <g transform="translate(1240,500)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Cash Crunch</text></g>
+            <g transform="translate(1320,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Refund Delays</text></g>
+            <g transform="translate(1060,720)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Panic</text></g>
+            <g transform="translate(1340,90)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Credit Penalty</text></g>
+            <g transform="translate(60,300)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Geofence Fine</text></g>
+            <g transform="translate(720,560)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Reports</text></g>
+            <g transform="translate(450,700)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Recovery Speed</text></g>
+          </g>
+
+          <g>
+            <g transform="translate(220,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Bike Availability</text></g>
+            <g transform="translate(450,540)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Urban Clutter</text></g>
+            <g transform="translate(220,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Public Complaints</text></g>
+            <g transform="translate(60,460)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Government Caps</text></g>
+          </g>
+
+          <g class="fragment" data-fragment-index="0">
+            <!-- Bike Availability → Urban Clutter (+) -->
+            <path class="loop balancing l-B2" style="--len:340" d="M 320 220 Q 400 380, 530 540"/>
+            <text class="polarity pos" x="380" y="380">+</text>
+            <!-- Urban Clutter → Public Complaints (+) -->
+            <path class="loop balancing l-B2" style="--len:280" d="M 470 600 Q 380 620, 340 640"/>
+            <text class="polarity pos" x="380" y="610">+</text>
+            <!-- Public Complaints → Government Caps (+) -->
+            <path class="loop balancing l-B2" style="--len:300" d="M 230 640 Q 140 580, 130 520"/>
+            <text class="polarity pos" x="140" y="600">+</text>
+            <!-- Government Caps → Bike Availability (-) -->
+            <path class="loop balancing l-B2" style="--len:340" d="M 160 460 Q 200 320, 280 220"/>
+            <text class="polarity neg" x="180" y="370">−</text>
+          </g>
+
+          <g class="fragment fade-only" data-fragment-index="0">
+            <circle class="loop-id-circle balancing" cx="240" cy="420" r="26" fill="#FAF8F4"/>
+            <text class="loop-id balancing" x="240" y="428">B2</text>
+          </g>
+
+          <g class="fragment fade-only" data-fragment-index="1">
+            <rect class="archetype-pill balancing" x="80" y="780" width="300" height="36"/>
+            <text class="archetype-text" x="230" y="804">Limits to Growth</text>
+          </g>
+        </svg>
+      </div>
+      <p class="caption fragment fade-only" data-fragment-index="1">
+        <span class="data">Beijing</span> banned new shared-bike deployments in 2017 with <strong>2.3 million bikes already on the streets</strong>. The ceiling appeared the moment the externality became politically visible.
+      </p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 12 · Guidance loops B3 / B4 / R7             3:25 – 3:50 -->
+    <!-- ============================================================ -->
+    <section class="diagram-slide" data-timestamp="3:25 – 3:50"
+             data-notes="The designed loops — what Hellobike added that Ofo didn't have. B3 credit, B4 geofence, R7 reporting reward. Mention prospect theory: loss aversion is stronger than reward.">
+      <div class="header">
+        <div class="tag">CLD · DESIGNED LOOPS</div>
+        <h2>Guidance loops the survivors built</h2>
+      </div>
+      <div class="canvas">
+        <svg class="diagram cld-svg focus-guidance" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrow-gold-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#A78A4D"/></marker>
+          </defs>
+
+          <g opacity="0.35">
+            <g transform="translate(220,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Bike Availability</text></g>
+            <g transform="translate(490,80)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Sense of Ownership</text></g>
+            <g transform="translate(760,160)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Individual Care</text></g>
+            <g transform="translate(430,260)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Satisfaction</text></g>
+            <g transform="translate(1320,290)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Social Tolerance</text></g>
+            <g transform="translate(990,440)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Maintenance Cost</text></g>
+            <g transform="translate(1240,500)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Cash Crunch</text></g>
+            <g transform="translate(1320,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Refund Delays</text></g>
+            <g transform="translate(1060,720)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Panic</text></g>
+            <g transform="translate(220,640)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Public Complaints</text></g>
+            <g transform="translate(60,460)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Government Caps</text></g>
+          </g>
+
+          <g>
+            <g transform="translate(700,360)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Fleet Quality</text></g>
+            <g transform="translate(1080,180)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Vandalism</text></g>
+            <g transform="translate(450,540)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Urban Clutter</text></g>
+            <g transform="translate(1340,90)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Credit Penalty</text></g>
+            <g transform="translate(60,300)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">Geofence Fine</text></g>
+            <g transform="translate(720,560)"><rect class="cld-var" width="200" height="60"/><text class="cld-var-label" x="100" y="36">User Reports</text></g>
+            <g transform="translate(450,700)"><rect class="cld-var" width="220" height="60"/><text class="cld-var-label" x="110" y="36">Recovery Speed</text></g>
+          </g>
+
+          <!-- B3 — Credit Penalty supervises Vandalism -->
+          <g class="fragment" data-fragment-index="0">
+            <path class="loop guidance l-B3" style="--len:240" d="M 1280 200 Q 1330 150, 1340 145"/>
+            <text class="polarity pos" x="1310" y="170">+</text>
+            <path class="loop guidance l-B3" style="--len:260" d="M 1450 150 Q 1380 200, 1280 210"/>
+            <text class="polarity neg" x="1380" y="190">−</text>
+            <circle class="loop-id-circle guidance" cx="1370" cy="195" r="24" fill="#FAF8F4"/>
+            <text class="loop-id guidance" x="1370" y="203">B3</text>
+          </g>
+
+          <!-- B4 — Geofence Fine supervises Urban Clutter -->
+          <g class="fragment" data-fragment-index="1">
+            <path class="loop guidance l-B4" style="--len:300" d="M 450 560 Q 280 480, 160 360"/>
+            <text class="polarity pos" x="280" y="500">+</text>
+            <path class="loop guidance l-B4" style="--len:300" d="M 200 360 Q 320 460, 450 540"/>
+            <text class="polarity neg" x="320" y="430">−</text>
+            <circle class="loop-id-circle guidance" cx="280" cy="440" r="24" fill="#FAF8F4"/>
+            <text class="loop-id guidance" x="280" y="448">B4</text>
+          </g>
+
+          <!-- R7 — User Reports → Recovery Speed → Fleet Quality -->
+          <g class="fragment" data-fragment-index="2">
+            <path class="loop guidance l-R7" style="--len:260" d="M 800 420 Q 780 480, 800 560"/>
+            <text class="polarity neg" x="755" y="500">−</text>
+            <path class="loop guidance l-R7" style="--len:280" d="M 800 620 Q 700 660, 600 700"/>
+            <text class="polarity pos" x="690" y="680">+</text>
+            <path class="loop guidance l-R7" style="--len:280" d="M 560 700 Q 660 600, 760 420"/>
+            <text class="polarity pos" x="650" y="540">+</text>
+            <circle class="loop-id-circle guidance" cx="660" cy="600" r="24" fill="#FAF8F4"/>
+            <text class="loop-id guidance" x="660" y="608">R7</text>
+          </g>
+
+          <!-- Caption pills -->
+          <g class="fragment fade-only" data-fragment-index="3">
+            <rect class="archetype-pill guidance" x="120" y="40" width="320" height="32"/>
+            <text class="archetype-text" x="280" y="61">Designed by Hellobike, not Ofo</text>
+          </g>
+        </svg>
+      </div>
+      <p class="caption fragment fade-only" data-fragment-index="3">
+        <span class="data">Frontiers in Psychology (2021)</span> confirms what prospect theory predicts: <strong>negative feedback (penalty) is more behaviour-shaping than positive (reward).</strong> Loss aversion is the lever.
+      </p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 13 · CLD improvements                        3:50 – 4:15 -->
+    <!-- ============================================================ -->
+    <section data-timestamp="3:50 – 4:15"
+             data-notes="Four improvements, each tied to a loop they break or strengthen. End with: 'Hellobike survived because it engineered the loops Ofo left to chance.'">
+      <div class="eyebrow">DIAGRAM 2 · IMPROVEMENTS</div>
+      <h2>Loops to break, loops to strengthen</h2>
+      <div class="improvements">
+        <div class="item fragment">
+          <div class="num">01 · Breaks B1</div>
+          <h3>Credit-based ownership simulation</h3>
+          <p>Treat the credit score as a stake in the system. Sense of ownership becomes synthetic but real — restoring the missing variable.</p>
+        </div>
+        <div class="item fragment">
+          <div class="num">02 · Breaks R1</div>
+          <h3>Community reporting + faster recovery</h3>
+          <p>Shorten the damage-spiral feedback delay. Broken bikes leave the street before they teach the next user that damage is normal.</p>
+        </div>
+        <div class="item fragment">
+          <div class="num">03 · Breaks R3</div>
+          <h3>Eliminate deposits entirely (Hellobike's model)</h3>
+          <p>Credit-score-based access. No deposit pool means no deposit pool to collapse. The trust loop has nothing to break.</p>
+        </div>
+        <div class="item fragment">
+          <div class="num">04 · Strengthens B3</div>
+          <h3>Integrate with Alipay Sesame Score</h3>
+          <p>Make the loss-aversion signal cross-platform. Damage to a bike now threatens loans, rentals, even visa applications — a weight no individual app can carry alone.</p>
+        </div>
+      </div>
+      <div class="kicker fragment">Hellobike survived because it <em>engineered</em> the loops Ofo left to chance.</div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 14 · Cross-system coupling                   4:15 – 4:50 -->
+    <!-- ============================================================ -->
+    <section class="diagram-slide" data-timestamp="4:15 – 4:50"
+             data-notes="The two diagrams are not independent. Three handoffs: vandalism (social) → maintenance cost (technical); trust collapse (social) → deposit pool (technical); guidance mechanisms (technical) → behaviour loops (social). End: 'system design means designing both sides together.'">
+      <div class="header">
+        <div class="tag">COUPLING · D1 ↔ D2</div>
+        <h2>Where the social and technical systems meet</h2>
+      </div>
+      <div class="canvas">
+        <svg class="diagram coupling-svg" viewBox="0 0 1600 880" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrow-red-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C8553D"/></marker>
+          </defs>
+
+          <!-- Mini frame for D1 (technical) -->
+          <rect class="mini-frame" x="40" y="80" width="640" height="720"/>
+          <text class="mini-label" x="62" y="120">DIAGRAM 1 · TECHNICAL</text>
+
+          <g transform="translate(80,160)" opacity="0.85">
+            <rect class="layer-band physical" x="0" y="0" width="560" height="180"/>
+            <text class="layer-label" x="20" y="30">PHYSICAL</text>
+            <g transform="translate(20,60)"><rect class="component" width="120" height="100"/><text class="component-label" x="60" y="56">Smart Lock</text></g>
+            <g transform="translate(160,60)"><rect class="component" width="120" height="100"/><text class="component-label" x="60" y="56">GPS</text></g>
+            <g transform="translate(300,60)"><rect class="component" width="120" height="100"/><text class="component-label" x="60" y="56">QR</text></g>
+            <g transform="translate(440,60)"><rect class="component" width="100" height="100"/><text class="component-label" x="50" y="56">Battery</text></g>
+          </g>
+          <g transform="translate(80,360)" opacity="0.85">
+            <rect class="layer-band digital" x="0" y="0" width="560" height="180"/>
+            <text class="layer-label" x="20" y="30">DIGITAL</text>
+            <g transform="translate(20,60)"><rect class="component" width="160" height="100"/><text class="component-label" x="80" y="56">App</text></g>
+            <g transform="translate(200,60)"><rect class="component" width="160" height="100"/><text class="component-label" x="80" y="56">Backend · Deposit Pool</text></g>
+            <g transform="translate(380,60)"><rect class="component" width="160" height="100"/><text class="component-label" x="80" y="56">Geofence</text></g>
+          </g>
+          <g transform="translate(80,560)" opacity="0.85">
+            <rect class="layer-band ops" x="0" y="0" width="560" height="180"/>
+            <text class="layer-label" x="20" y="30">OPERATIONAL</text>
+            <g transform="translate(20,60)"><rect class="component" width="260" height="100"/><text class="component-label" x="130" y="56">Maintenance · Cost</text></g>
+            <g transform="translate(300,60)"><rect class="component" width="240" height="100"/><text class="component-label" x="120" y="56">Field Operators</text></g>
+          </g>
+
+          <!-- Mini frame for D2 (social) -->
+          <rect class="mini-frame" x="920" y="80" width="640" height="720"/>
+          <text class="mini-label" x="942" y="120">DIAGRAM 2 · SOCIAL</text>
+
+          <g opacity="0.85">
+            <g transform="translate(960,170)"><rect class="cld-var" width="180" height="50"/><text class="cld-var-label" x="90" y="32">Vandalism</text></g>
+            <g transform="translate(1180,170)"><rect class="cld-var" width="200" height="50"/><text class="cld-var-label" x="100" y="32">Social Tolerance</text></g>
+            <g transform="translate(1380,250)"><rect class="cld-var" width="160" height="50"/><text class="cld-var-label" x="80" y="32">Fleet Quality</text></g>
+            <g transform="translate(1180,330)"><rect class="cld-var" width="200" height="50"/><text class="cld-var-label" x="100" y="32">User Trust</text></g>
+            <g transform="translate(960,330)"><rect class="cld-var" width="180" height="50"/><text class="cld-var-label" x="90" y="32">Refund Panic</text></g>
+            <g transform="translate(1080,450)"><rect class="cld-var" width="200" height="50"/><text class="cld-var-label" x="100" y="32">Behaviour Loops</text></g>
+            <g transform="translate(1320,540)"><rect class="cld-var" width="200" height="50"/><text class="cld-var-label" x="100" y="32">Credit / Penalty</text></g>
+            <g transform="translate(960,560)"><rect class="cld-var" width="200" height="50"/><text class="cld-var-label" x="100" y="32">Loss-Aversion</text></g>
+
+            <!-- Sketched local loop arrows (faded) -->
+            <path class="loop reinforcing" style="--len:160; stroke-dashoffset:0" d="M 1140 195 Q 1170 180, 1180 195" opacity="0.35"/>
+            <path class="loop reinforcing" style="--len:160; stroke-dashoffset:0" d="M 1180 215 Q 1170 230, 1140 215" opacity="0.35"/>
+            <path class="loop balancing"   style="--len:160; stroke-dashoffset:0" d="M 1280 360 Q 1080 420, 1080 460" opacity="0.35"/>
+          </g>
+
+          <!-- Coupling arrow 1: Vandalism (social) → Maintenance Cost (technical) -->
+          <g class="fragment" data-fragment-index="0">
+            <path class="coupling-arrow" style="--len:520" d="M 960 195 Q 700 240, 540 670"/>
+            <text class="coupling-label" x="700" y="430">vandalism (social) → maintenance cost (technical)</text>
+          </g>
+
+          <!-- Coupling arrow 2: Refund Panic (social) → Deposit Pool (technical) -->
+          <g class="fragment" data-fragment-index="1">
+            <path class="coupling-arrow" style="--len:520" d="M 960 355 Q 760 420, 460 460"/>
+            <text class="coupling-label" x="540" y="450">trust collapse (social) → deposit pool (technical)</text>
+          </g>
+
+          <!-- Coupling arrow 3: Geofence/Forcing (technical) → Behaviour Loops (social) -->
+          <g class="fragment" data-fragment-index="2">
+            <path class="coupling-arrow" style="--len:520" d="M 640 460 Q 880 480, 1080 470"/>
+            <text class="coupling-label" x="700" y="510">guidance mechanisms (technical) → behaviour loops (social)</text>
+          </g>
+
+        </svg>
+      </div>
+      <div class="kicker fragment" data-fragment-index="3">
+        The shared-bike system didn't fail because of one subsystem. It failed because breakdowns <em>cascaded across the social–technical boundary.</em> System design means designing both sides together.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE 15 · Closing                                  4:50 – 5:00 -->
+    <!-- ============================================================ -->
+    <section class="closing-slide" data-timestamp="4:50 – 5:00"
+             data-notes="Land softly. Read the punchline at the pace of one beat per phrase. Hold the final frame for ~2 seconds before stopping the recording.">
+      <div class="eyebrow">CONCLUSION</div>
+      <p class="punchline">
+        The next generation of shared bikes — <em>e-bikes, credit-based access, geofenced parking</em> — is exactly these system-design improvements <em>in action.</em>
+      </p>
+      <p class="punchline fragment fade-only" style="margin-top:24px">
+        Understanding the system is how we build ones that last.
+      </p>
+      <div class="signoff fragment fade-only">Thank you. — DESN2200, Group [N]</div>
+    </section>
+
+  </div>
+
+  <!-- Chrome -->
+  <div class="deck-progress"><div class="bar"></div></div>
+  <div class="deck-counter">1 / 15</div>
+  <div class="deck-hint">→ next · ← prev · O overview · S notes · F fullscreen · ? help</div>
+  <div class="deck-help">
+    <strong>Navigation</strong><br>
+    <kbd>→</kbd> <kbd>Space</kbd> next fragment / slide<br>
+    <kbd>←</kbd> previous<br>
+    <kbd>Home</kbd> first slide · <kbd>End</kbd> last<br>
+    <kbd>O</kbd> overview grid<br>
+    <kbd>S</kbd> speaker notes window<br>
+    <kbd>F</kbd> fullscreen<br>
+    <kbd>?</kbd> toggle this help · <kbd>Esc</kbd> close
+  </div>
+</div>
+
+<script src="js/deck.js"></script>
+</body>
+</html>

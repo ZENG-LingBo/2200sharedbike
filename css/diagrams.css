@@ -1,0 +1,222 @@
+/* SVG diagram styling — shared across architecture (D1) and CLD (D2). */
+
+svg.diagram { font-family: inherit; }
+svg.diagram text { font-family: inherit; fill: var(--ink); }
+
+/* === Diagram 1: System Architecture === */
+
+.layer-band {
+  fill: var(--bg-tint);
+  stroke: var(--line);
+  stroke-width: 1;
+  rx: 4;
+}
+.layer-band.physical { fill: var(--layer-physical); fill-opacity: 0.45; }
+.layer-band.digital  { fill: var(--layer-digital);  fill-opacity: 0.45; }
+.layer-band.ops      { fill: var(--layer-ops);      fill-opacity: 0.45; }
+
+.layer-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  fill: var(--muted);
+}
+.layer-sub {
+  font-size: 12px;
+  fill: var(--muted);
+  font-style: italic;
+}
+
+.component {
+  fill: #ffffff;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  rx: 3;
+}
+.component-label {
+  font-size: 14px;
+  font-weight: 600;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+.component-sub {
+  font-size: 10.5px;
+  fill: var(--muted);
+  text-anchor: middle;
+}
+
+.user-arrow {
+  stroke: var(--accent);
+  stroke-width: 2;
+  fill: none;
+  marker-end: url(#arrow-red);
+  stroke-dasharray: var(--len, 400);
+  stroke-dashoffset: var(--len, 400);
+  transition: stroke-dashoffset 700ms ease;
+}
+.fragment.visible .user-arrow,
+.user-arrow.fragment.visible { stroke-dashoffset: 0; }
+
+.user-step {
+  font-size: 12px;
+  font-weight: 700;
+  fill: #fff;
+}
+.user-step-bg {
+  fill: var(--accent);
+}
+.user-step-label {
+  font-size: 12.5px;
+  fill: var(--ink);
+  font-weight: 500;
+}
+
+/* Guidance badges */
+.badge {
+  rx: 12;
+  stroke-width: 1.2;
+}
+.badge-forcing  { fill: rgba(200, 85, 61, 0.12);   stroke: var(--accent); }
+.badge-nudge    { fill: rgba(167, 138, 77, 0.14);  stroke: var(--guidance); }
+.badge-feedback { fill: rgba(61, 90, 108, 0.12);   stroke: var(--balance); }
+.badge-reward   { fill: rgba(107, 142, 78, 0.12);  stroke: var(--positive); }
+
+.badge-text { font-size: 11.5px; font-weight: 600; fill: var(--ink); }
+.badge-icon { font-size: 12px; font-weight: 800; }
+.badge-icon.forcing  { fill: var(--accent); }
+.badge-icon.nudge    { fill: var(--guidance); }
+.badge-icon.feedback { fill: var(--balance); }
+.badge-icon.reward   { fill: var(--positive); }
+
+/* === Diagram 2: Causal Loop Diagram === */
+
+.cld-var {
+  fill: #ffffff;
+  stroke: var(--ink);
+  stroke-width: 1.1;
+  rx: 18;
+}
+.cld-var-label {
+  font-size: 13px;
+  fill: var(--ink);
+  text-anchor: middle;
+  font-weight: 500;
+}
+
+/* Loop paths — drawn via stroke-dashoffset */
+.loop {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: var(--len, 800);
+  stroke-dashoffset: var(--len, 800);
+  transition: stroke-dashoffset 900ms ease, opacity 300ms ease;
+  opacity: 0.95;
+}
+.fragment.visible .loop,
+.loop.fragment.visible { stroke-dashoffset: 0; }
+
+.loop.reinforcing { stroke: var(--accent); marker-end: url(#arrow-red); }
+.loop.balancing   { stroke: var(--balance); marker-end: url(#arrow-slate); }
+.loop.guidance {
+  stroke: var(--guidance);
+  stroke-width: 1.6;
+  stroke-dasharray: var(--len, 800);
+  marker-end: url(#arrow-gold);
+}
+
+/* Polarity labels (+/-) on arrow segments */
+.polarity {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.polarity.pos { fill: var(--positive); }
+.polarity.neg { fill: var(--negative); }
+
+/* Loop centroid label (R1 / B1 etc.) */
+.loop-id {
+  font-size: 22px;
+  font-weight: 800;
+  font-family: "Iowan Old Style", Georgia, serif;
+  fill: var(--accent);
+  text-anchor: middle;
+}
+.loop-id.balancing { fill: var(--balance); }
+.loop-id.guidance  { fill: var(--guidance); }
+
+.loop-id-circle {
+  fill: var(--bg);
+  stroke-width: 2;
+  r: 22;
+}
+.loop-id-circle.reinforcing { stroke: var(--accent); }
+.loop-id-circle.balancing   { stroke: var(--balance); }
+.loop-id-circle.guidance    { stroke: var(--guidance); }
+
+/* Archetype pill badges */
+.archetype-pill {
+  rx: 14;
+  fill: var(--ink);
+}
+.archetype-pill.balancing { fill: var(--balance); }
+.archetype-pill.guidance  { fill: var(--guidance); }
+.archetype-text {
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 500;
+  fill: #fff;
+  text-anchor: middle;
+  letter-spacing: 0.02em;
+}
+
+/* Dim the diagram backdrop when a single loop is highlighted */
+.cld-svg .dimmable { transition: opacity 400ms ease; }
+.cld-svg.focus-B1 .loop:not(.l-B1),
+.cld-svg.focus-R1 .loop:not(.l-R1),
+.cld-svg.focus-R3 .loop:not(.l-R3),
+.cld-svg.focus-B2 .loop:not(.l-B2),
+.cld-svg.focus-guidance .loop:not(.l-B3):not(.l-B4):not(.l-R7) { opacity: 0.12; }
+
+/* Coupling slide (D1 ↔ D2) */
+.mini-frame {
+  fill: var(--bg-tint); stroke: var(--line); stroke-width: 1; rx: 4;
+}
+.mini-label {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  fill: var(--muted);
+}
+.coupling-arrow {
+  stroke: var(--accent); stroke-width: 2.5; fill: none; opacity: 0;
+  marker-end: url(#arrow-red);
+  transition: opacity 500ms ease, stroke-dashoffset 800ms ease;
+  stroke-dasharray: var(--len, 600);
+  stroke-dashoffset: var(--len, 600);
+}
+.fragment.visible .coupling-arrow {
+  opacity: 1;
+  stroke-dashoffset: 0;
+}
+.coupling-label {
+  font-size: 13px; fill: var(--ink); font-weight: 500;
+}
+
+/* Closing slide */
+.closing-slide {
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: clamp(80px, 10vw, 200px);
+}
+.closing-slide .punchline {
+  font-family: "Iowan Old Style", Georgia, serif;
+  font-size: clamp(36px, 3.6vw, 56px);
+  line-height: 1.2;
+  max-width: 22em;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.closing-slide .punchline em { font-style: italic; color: var(--accent); }
+.closing-slide .signoff {
+  margin-top: 36px; font-size: 1.05em; color: var(--muted);
+}
