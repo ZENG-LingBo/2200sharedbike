@@ -25,6 +25,22 @@ body{background:radial-gradient(120% 140% at 70% 10%,#3d1140 0%,#1d0a20 55%,#120
 #demo{width:375px;height:812px;border:0;border-radius:40px;background:#e7eae9;
   box-shadow:0 40px 120px rgba(0,0,0,.6)}
 
+/* ---------- narration-synced callouts ---------- */
+#coL,#coR{position:fixed;top:50%;transform:translateY(-50%);z-index:20;display:flex;
+  flex-direction:column;gap:16px;pointer-events:none;max-width:320px}
+#coL{align-items:flex-end}
+#coR{align-items:flex-start}
+.co{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:18px;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:16px 22px;
+  opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.co.in{opacity:1;transform:translateY(0)}
+.co.out{opacity:0;transform:translateY(-12px)}
+.co-stat .big{font-size:46px;font-weight:800;color:#c9fa85;line-height:1.05;letter-spacing:-.01em}
+.co-stat .small{font-size:14.5px;color:rgba(255,255,255,.72);margin-top:3px}
+.co-chip{display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:999px}
+.co-chip .dot{width:9px;height:9px;border-radius:50%;background:#c9fa85;flex:none}
+.co-chip .txt{font-size:15.5px;font-weight:600;color:#fff;letter-spacing:.02em;white-space:nowrap}
+
 /* tap ripple */
 .ripple{position:fixed;width:44px;height:44px;border-radius:50%;pointer-events:none;z-index:40;
   border:3px solid #c9fa85;background:rgba(201,250,133,.25);transform:translate(-50%,-50%) scale(.4);
@@ -72,6 +88,7 @@ body{background:radial-gradient(120% 140% at 70% 10%,#3d1140 0%,#1d0a20 55%,#120
 <body>
 
 <div id="stage"><div id="phone"><iframe id="demo" src="newsflick_demo.html"></iframe></div></div>
+<div id="coL"></div><div id="coR"></div>
 
 <svg style="display:none" aria-hidden="true"><symbol id="fliq-logo" viewBox="0 0 327 332">
 <path d="M196.051 244.329V201.05H118.052L107.621 202.907L89.3115 284.676H151.47C183.211 284.676 194.416 257.778 196.051 244.329Z"/>
@@ -156,6 +173,10 @@ This is our working prototype. Let us take you through it.`,
   actions:[
     {at:.28, run:()=> showCard(null)},
     {at:.45, run:()=> scrollSub('feed','.scroll', 620, 3800)},
+    {at:.55, run:()=> callout('right','chip','Transparent')},
+    {at:.61, run:()=> callout('right','chip','Comprehensive')},
+    {at:.67, run:()=> callout('right','chip','Visual')},
+    {at:.73, run:()=> callout('right','chip','Personalized')},
     {at:.78, run:()=> scrollSub('feed','.scroll', 0, 2600)},
   ]},
 
@@ -169,7 +190,9 @@ The purpose is simple: get genuinely informed in about one minute, without scrol
 Fliq respects your time. Check it, and go about your day — you'll always know what's going on. And when you want more, every story is one tap away.`,
   actions:[
     {at:.03, run:()=> scrollToEl('feed','.scroll','.snapshot', 1400, -12)},
+    {at:.10, run:()=> callout('right','chip','Summary of your whole feed')},
     {at:.30, run:()=> scrollSub('feed','.scroll', null, 3200, 210)},
+    {at:.45, run:()=> callout('left','stat','≈1 min','to get informed')},
     {at:.82, run:()=> scrollToEl('feed','.scroll','.mcard[data-story="s01"]', 1800, -80)},
   ]},
 
@@ -188,10 +211,13 @@ And at the top of every story, you'll notice two small signals. They're where Fl
   actions:[
     {at:.02, run:()=>{ tapEl('feed','.mcard[data-story="s01"]'); setTimeout(()=>demoWin().openStory('s01'), 350); }},
     {at:.14, run:()=> scrollSub('story','.phone', 560, 4200)},
+    {at:.25, run:()=> callout('left','stat','2–3 cards','the whole story')},
     {at:.34, run:()=> scrollSub('story','.phone', null, 4200, 620)},
     {at:.52, run:()=> tapEl('story','.tab[data-tab="1"]')},
+    {at:.55, run:()=> callout('right','chip','Background')},
     {at:.60, run:()=> scrollSub('story','.phone', null, 3000, 320)},
     {at:.68, run:()=> tapEl('story','.tab[data-tab="2"]')},
+    {at:.71, run:()=> callout('right','chip','The Arguments')},
     {at:.76, run:()=> scrollSub('story','.phone', null, 3000, 320)},
     {at:.88, run:()=> scrollSub('story','.phone', 0, 2200)},
   ]},
@@ -211,11 +237,16 @@ This is how we fight misinformation: not by deciding for you, but by showing our
   actions:[
     {at:.02, run:()=> demoWin().openSheet('confidence')},
     {at:.10, run:()=> { const d=subDoc('confidence'); const g=d&&d.querySelector('.gate'); if(g) g.hidden=true; }},
+    {at:.15, run:()=> callout('left','chip','Low — still developing','', '#f5b567')},
     {at:.30, run:()=> scrollToEl('confidence','.scroll','.cs-why', 1400, -60)},
+    {at:.34, run:()=> callout('right','chip','Confirmed','', '#7bd8a6')},
     {at:.42, run:()=> tapEl('confidence','.cs-why:has(.cs-tag--ongoing)')},
+    {at:.46, run:()=> callout('right','chip','Ongoing','', '#f5b567')},
     {at:.54, run:()=> tapEl('confidence','.cs-why:has(.cs-tag--unverified)')},
+    {at:.58, run:()=> callout('right','chip','Unverified','', '#ff9d90')},
     {at:.66, run:()=> scrollToEl('confidence','.scroll','.cs-item--terms', 1600, -40)},
     {at:.79, run:()=> scrollToEl('confidence','.scroll','.cs-src', 1600, -60)},
+    {at:.82, run:()=> callout('left','stat','9','independent sources')},
     {at:.965,run:()=> demoWin().closeSheet('confidence')},
   ]},
 
@@ -231,10 +262,17 @@ Below the ring are the voices themselves — officials, experts, news outlets, a
 Most apps show you one narrative. Fliq shows you the whole conversation — so you understand not just the story, but how the world is responding to it.`,
   actions:[
     {at:.02, run:()=> demoWin().openSheet('pulse')},
+    {at:.13, run:()=> callout('left','stat','9,000','posts analysed')},
+    {at:.22, run:()=> callout('left','stat','66%','negative tenor')},
+    {at:.27, run:()=> callout('right','chip','Protective','', '#7bd8a6')},
+    {at:.30, run:()=> callout('right','chip','Wary','', '#b3a6ff')},
+    {at:.33, run:()=> callout('right','chip','Anxious','', '#ffd59e')},
+    {at:.36, run:()=> callout('right','chip','Skeptical','', '#a9b6cc')},
     {at:.32, run:()=> tapEl('pulse','.slice[data-emo="protective"]')},
     {at:.43, run:()=> tapEl('pulse','.slice[data-emo="protective"]')},
     {at:.50, run:()=> scrollToEl('pulse','.scroll','.tab[data-tab="All"]', 1600, -14)},
     {at:.62, run:()=> tapEl('pulse','.tab[data-tab="Officials"]')},
+    {at:.64, run:()=> callout('right','chip','Officials · Experts · Outlets · Commentators')},
     {at:.70, run:()=> tapEl('pulse','.tab[data-tab="Experts"]')},
     {at:.78, run:()=> tapEl('pulse','.voice:not([hidden]) [data-rx]')},
     {at:.88, run:()=> scrollSub('pulse','.scroll', null, 5200, 700)},
@@ -308,6 +346,20 @@ function ripple(x,y){
 }
 function showCard(id){
   ['titleCard','closingCard'].forEach(c => $('#'+c).classList.toggle('on', c===id));
+}
+function callout(side, kind, big, small, color){
+  const col = side==='left' ? $('#coL') : $('#coR');
+  const d = document.createElement('div');
+  d.className = 'co co-'+kind;
+  d.innerHTML = kind==='stat'
+    ? `<div class="big">${big}</div><div class="small">${small||''}</div>`
+    : `<span class="dot"${color?` style="background:${color}"`:''}></span><span class="txt">${big}</span>`;
+  col.appendChild(d);
+  while(col.children.length>3) col.firstChild.remove();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('in')));
+}
+function clearCallouts(){
+  document.querySelectorAll('.co').forEach(c=>{ c.classList.add('out'); setTimeout(()=>c.remove(), 600); });
 }
 
 /* ========================================================= audio: generate / load */
@@ -455,6 +507,7 @@ async function runShow(silent, speed=1){
   for(const s of SCENES){
     if(abort) break;
     await playScene(s, silent, speed);
+    clearCallouts();
     await new Promise(r=>setTimeout(r, 400/speed));
   }
   if(!abort){ await new Promise(r=>setTimeout(r, 3500/speed)); }
@@ -462,13 +515,16 @@ async function runShow(silent, speed=1){
 }
 $('#start').addEventListener('click', ()=>runShow(false));
 $('#rehearse').addEventListener('click', ()=>runShow(true, +(new URLSearchParams(location.search).get('speed'))||1));
-window.addEventListener('keydown', e=>{ if(e.key==='Escape'){ abort = true; showCard(null); $('#panel').classList.remove('hidden'); }});
+window.addEventListener('keydown', e=>{ if(e.key==='Escape'){ abort = true; showCard(null); clearCallouts(); $('#panel').classList.remove('hidden'); }});
 
-/* fit the phone to the viewport */
+/* fit the phone to the viewport; keep callout columns flanking it */
 function fit(){
   const availW = innerWidth - ($('#panel').classList.contains('hidden') ? 0 : 380);
   const k = Math.min((innerHeight*0.88)/812, (availW*0.8)/375, 1.35);
   $('#phone').style.transform = 'scale('+k+')';
+  const half = (375*k)/2 + 52;
+  $('#coL').style.right = 'calc(50% + '+half+'px)';
+  $('#coR').style.left  = 'calc(50% + '+half+'px)';
 }
 addEventListener('resize', fit);
 new MutationObserver(fit).observe($('#panel'), {attributes:true});
