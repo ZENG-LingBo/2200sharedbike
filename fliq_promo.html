@@ -231,6 +231,7 @@ And at the top of every story, you'll notice two small signals. They're where Fl
     {at:.14, run:()=> scrollSub('story','.phone', 560, 4200)},
     {at:.25, run:()=> callout('left','stat','5–8','cards per story')},
     {at:.34, run:()=> scrollSub('story','.phone', null, 4200, 620)},
+    {at:.50, run:()=> clearCallouts()},
     {at:.52, run:()=> tapEl('story','.tab[data-tab="1"]')},
     {at:.55, run:()=> callout('right','chip','Background')},
     {at:.60, run:()=> scrollSub('story','.phone', null, 3000, 320)},
@@ -257,11 +258,13 @@ This is how we fight misinformation: not by deciding for you, but by showing our
     {at:.10, run:()=> { const d=subDoc('confidence'); const g=d&&d.querySelector('.gate'); if(g) g.hidden=true; }},
     {at:.15, run:()=> callout('left','chip','Low — still developing','', '#f5b567')},
     {at:.30, run:()=> scrollToEl('confidence','.scroll','.cs-why', 1400, -60)},
+    {at:.31, run:()=> clearCallouts()},
     {at:.34, run:()=> callout('right','chip','Confirmed','', '#7bd8a6')},
     {at:.42, run:()=> tapEl('confidence','.cs-why:has(.cs-tag--ongoing)')},
     {at:.46, run:()=> callout('right','chip','Ongoing','', '#f5b567')},
     {at:.54, run:()=> tapEl('confidence','.cs-why:has(.cs-tag--unverified)')},
     {at:.58, run:()=> callout('right','chip','Unverified','', '#ff9d90')},
+    {at:.64, run:()=> clearCallouts()},
     {at:.66, run:()=> scrollToEl('confidence','.scroll','.cs-item--terms', 1600, -40)},
     {at:.79, run:()=> scrollToEl('confidence','.scroll','.cs-src', 1600, -60)},
     {at:.82, run:()=> callout('left','stat','9','independent sources')},
@@ -288,6 +291,7 @@ Most apps show you one narrative. Fliq shows you the whole conversation — so y
     {at:.36, run:()=> callout('right','chip','Skeptical','', '#a9b6cc')},
     {at:.32, run:()=> tapEl('pulse','.slice[data-emo="protective"]')},
     {at:.43, run:()=> tapEl('pulse','.slice[data-emo="protective"]')},
+    {at:.48, run:()=> clearCallouts()},
     {at:.50, run:()=> scrollToEl('pulse','.scroll','.tab[data-tab="All"]', 1600, -14)},
     {at:.62, run:()=> tapEl('pulse','.tab[data-tab="Officials"]')},
     {at:.64, run:()=> callout('right','chip','Officials · Experts · Outlets · Commentators')},
@@ -381,7 +385,7 @@ function callout(side, kind, big, small, color){
     ? `<div class="big">${big}</div><div class="small">${small||''}</div>`
     : `<span class="dot"${color?` style="background:${color}"`:''}></span><span class="txt">${big}</span>`;
   col.appendChild(d);
-  while(col.children.length>3) col.firstChild.remove();
+  while(col.children.length>4) col.firstChild.remove();
   requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('in')));
 }
 function clearCallouts(){
