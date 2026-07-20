@@ -7,8 +7,8 @@
 <!--
   HOW TO RECORD YOUR SUBMISSION VIDEO
   1. Open this page from the hosted URL (githack / GitHub Pages), NOT as a local file://
-  2. Paste your OpenAI API key, pick a voice, click "Generate voiceover" (one-time, ~30s).
-     The key stays in your browser only. You can also load 6 local MP3s instead.
+  2. Paste your ElevenLabs (or OpenAI) API key, pick a voice, click "Generate voiceover"
+     (one-time, ~30s). The key stays in your browser only. You can also load 6 local MP3s instead.
   3. Preview scenes if you like, then start your screen recorder (full screen).
   4. Click "Start the show" — the page runs the whole 4-minute take by itself.
   5. Stop recording after the closing card. Done.
@@ -96,16 +96,19 @@ browser blocks it from driving the demo. Please open the hosted URL instead (the
 
   <section>
     <h2>1 · Voiceover</h2>
-    <label>OpenAI API key (stays in this browser tab only)</label>
-    <input type="password" id="key" placeholder="sk-...">
+    <label>Provider</label>
+    <select id="provider">
+      <option value="elevenlabs" selected>ElevenLabs</option>
+      <option value="openai">OpenAI</option>
+    </select>
+    <label id="keyLabel">ElevenLabs API key (stays in this browser tab only)</label>
+    <input type="password" id="key" placeholder="xi-…">
     <label>Voice</label>
-    <select id="voice">
-      <option value="onyx" selected>Onyx — deep, calm (recommended)</option>
-      <option value="ash">Ash — warm, steady</option>
-      <option value="echo">Echo — clear, neutral</option>
-      <option value="sage">Sage — soft, thoughtful</option>
-      <option value="nova">Nova — bright, friendly</option>
-      <option value="shimmer">Shimmer — light, gentle</option>
+    <select id="voice"></select>
+    <label id="modelRow">Model</label>
+    <select id="model">
+      <option value="eleven_multilingual_v2" selected>Multilingual v2 — best quality</option>
+      <option value="eleven_flash_v2_5">Flash v2.5 — half the credits</option>
     </select>
     <button class="btn" id="gen">Generate voiceover</button>
     <label style="margin-top:14px">…or load your own 6 audio files (01-*.mp3 … 06-*.mp3)</label>
@@ -335,20 +338,66 @@ async function setAudio(id, blob){
   mark(id, '✓', true); maybeEnableStart();
 }
 
+/* provider-specific UI: key label + voice list (ElevenLabs voices are public premade voice IDs) */
+const PROVIDERS = {
+  elevenlabs: {
+    keyLabel: 'ElevenLabs API key (stays in this browser tab only)', ph: 'xi-…',
+    voices: [
+      ['JBFqnCBsd6RMkjVDRZzb','George — warm narrator (recommended)'],
+      ['nPczCjzI2devNBz1zQrb','Brian — deep, calm'],
+      ['onwK4e9ZLuTAKqWW03F9','Daniel — composed, news-style'],
+      ['21m00Tcm4TlvDq8ikWAM','Rachel — calm female'],
+      ['EXAVITQu4vr4xnSDxMaL','Sarah — soft female'],
+    ]},
+  openai: {
+    keyLabel: 'OpenAI API key (stays in this browser tab only)', ph: 'sk-…',
+    voices: [
+      ['onyx','Onyx — deep, calm (recommended)'],
+      ['ash','Ash — warm, steady'],
+      ['echo','Echo — clear, neutral'],
+      ['sage','Sage — soft, thoughtful'],
+      ['nova','Nova — bright, friendly'],
+      ['shimmer','Shimmer — light, gentle'],
+    ]},
+};
+function applyProvider(){
+  const p = PROVIDERS[$('#provider').value];
+  $('#keyLabel').textContent = p.keyLabel;
+  $('#key').placeholder = p.ph;
+  $('#voice').innerHTML = p.voices.map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+  const el = $('#provider').value === 'elevenlabs';
+  $('#modelRow').style.display = el ? '' : 'none';
+  $('#model').style.display = el ? '' : 'none';
+}
+$('#provider').addEventListener('change', applyProvider);
+applyProvider();
+
+async function ttsRequest(text){
+  const key = $('#key').value.trim(), voice = $('#voice').value;
+  if($('#provider').value === 'elevenlabs'){
+    return fetch('https://api.elevenlabs.io/v1/text-to-speech/'+voice+'?output_format=mp3_44100_128', {
+      method:'POST',
+      headers:{'xi-api-key':key, 'Content-Type':'application/json'},
+      body: JSON.stringify({text, model_id:$('#model').value,
+        voice_settings:{stability:0.6, similarity_boost:0.75}})
+    });
+  }
+  return fetch('https://api.openai.com/v1/audio/speech', {
+    method:'POST',
+    headers:{'Authorization':'Bearer '+key, 'Content-Type':'application/json'},
+    body: JSON.stringify({model:'gpt-4o-mini-tts', voice,
+      input:text, instructions:VOICE_STYLE, response_format:'mp3'})
+  });
+}
+
 $('#gen').addEventListener('click', async ()=>{
-  const key = $('#key').value.trim();
   $('#err').textContent = '';
-  if(!key){ $('#err').textContent = 'Paste your OpenAI API key first (or load MP3 files below).'; return; }
+  if(!$('#key').value.trim()){ $('#err').textContent = 'Paste your API key first (or load MP3 files below).'; return; }
   $('#gen').disabled = true;
   try{
     for(const s of SCENES){
       mark(s.id, '…');
-      const r = await fetch('https://api.openai.com/v1/audio/speech', {
-        method:'POST',
-        headers:{'Authorization':'Bearer '+key, 'Content-Type':'application/json'},
-        body: JSON.stringify({model:'gpt-4o-mini-tts', voice:$('#voice').value,
-          input:s.text, instructions:VOICE_STYLE, response_format:'mp3'})
-      });
+      const r = await ttsRequest(s.text);
       if(!r.ok){
         const t = await r.text();
         throw new Error('Scene '+s.id+': HTTP '+r.status+'\n'+t.slice(0,300));
