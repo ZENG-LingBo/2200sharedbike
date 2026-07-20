@@ -56,13 +56,13 @@ so read the narration exactly as written — the choreography follows the words.
 
 ## Scene 3 — Story & cards · `03-story.mp3` · target ≈ 0:55
 
-**Narration (129 words):**
+**Narration (130 words):**
 
 > Let's open a story: should under-16s lose social media?
 >
-> Every story on Fliq is told in cards — short, visual, and in plain language. No walls of text.
+> Every story on Fliq is told in five to eight cards — short, visual, and in plain language. No walls of text.
 >
-> The first two or three cards give you the whole story: what's happening, who it affects, and why people disagree. If you stop there, you're already informed.
+> The first few cards give you the whole story: what's happening, who it affects, and why people disagree. If you stop there, you're already informed.
 >
 > Everything after that is depth, organized the way you'd actually ask questions. Background explains how we got here. The Arguments lays out both sides fairly, in their own words.
 >
@@ -76,7 +76,7 @@ so read the narration exactly as written — the choreography follows the words.
 |---|---|
 | "Let's open a story…" | Tap the under-16s card; story page slides in over the hero image |
 | "…told in cards — short, visual…" | Scroll through the first story cards |
-| "The first two or three cards…" | Continue an unhurried scroll |
+| "The first few cards…" | Continue an unhurried scroll |
 | "Background explains how we got here." | Tap the **Background** tab |
 | "The Arguments lays out both sides…" | Tap **The Arguments** tab, brief scroll |
 | "…two small signals." | Scroll to top; the confidence pill and temperature pill get a highlight pulse |
@@ -157,15 +157,23 @@ so read the narration exactly as written — the choreography follows the words.
 
 | When | On screen |
 |---|---|
-| "That's Fliq. Transparent…" | Sheet closes, calm scroll back on the feed |
-| "News you can trust…" | Phone fades down, Fliq closing card fades in |
-| "…HKICT Awards. Thank you for watching." | Closing card: Fliq wordmark, tagline "News you can trust, in the time you have.", HKICT Awards line |
+| "That's Fliq." | Sheet closes; full-screen recap animation fades in over the phone |
+| "Transparent about what's known." | Kinetic line 1 slides in (keyword highlighted in lime) |
+| "Comprehensive without the noise." | Line 2 slides in |
+| "Visual by design." | Line 3 slides in |
+| "And personal to every reader." | Line 4 slides in |
+| "News you can trust, in the time you have." | Big belief statement appears below the four lines |
+| "…HKICT Awards. Thank you for watching." | Recap fades to the closing card: white Fliq logo + HKICT Awards line |
 
 ---
 
 ## Total
 
-571 narration words ≈ **3 min 55 s** at 140 wpm — right at the 4-minute target with natural pauses.
+~551 narration words ≈ **3 min 55 s** at 140 wpm — right at the 4-minute target with natural pauses.
+
+> **If you already generated audio:** only scene 3's text changed (five-to-eight cards) — regenerate
+> `03-story.mp3`; the other five files are still valid. Scene 6's ending is now a full-screen recap
+> animation, but its narration is unchanged, so its audio stays as is.
 
 ## Recording the MP3s — checklist
 
