@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fliq — Promo Recorder</title>
+<!--
+  HOW TO RECORD YOUR SUBMISSION VIDEO
+  1. Open this page from the hosted URL (githack / GitHub Pages), NOT as a local file://
+  2. Paste your OpenAI API key, pick a voice, click "Generate voiceover" (one-time, ~30s).
+     The key stays in your browser only. You can also load 6 local MP3s instead.
+  3. Preview scenes if you like, then start your screen recorder (full screen).
+  4. Click "Start the show" — the page runs the whole 4-minute take by itself.
+  5. Stop recording after the closing card. Done.
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:radial-gradient(120% 140% at 70% 10%,#3d1140 0%,#1d0a20 55%,#120514 100%);
+  font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;color:#fff;overflow:hidden}
+
+/* ---------- stage ---------- */
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#phone{position:relative;width:375px;height:812px;flex:none;transform-origin:center center}
+#demo{width:375px;height:812px;border:0;border-radius:40px;background:#e7eae9;
+  box-shadow:0 40px 120px rgba(0,0,0,.6)}
+
+/* tap ripple */
+.ripple{position:fixed;width:44px;height:44px;border-radius:50%;pointer-events:none;z-index:40;
+  border:3px solid #c9fa85;background:rgba(201,250,133,.25);transform:translate(-50%,-50%) scale(.4);
+  opacity:0;animation:rip .6s ease-out forwards}
+@keyframes rip{10%{opacity:1}100%{transform:translate(-50%,-50%) scale(1.5);opacity:0}}
+
+/* ---------- cards ---------- */
+.card{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:18px;background:radial-gradient(120% 140% at 70% 10%,#3d1140 0%,#1d0a20 55%,#120514 100%);
+  opacity:0;pointer-events:none;transition:opacity 1.1s ease}
+.card.on{opacity:1;pointer-events:auto}
+.wordmark{font-size:96px;font-weight:800;letter-spacing:-.02em;
+  background:linear-gradient(100deg,#fff 30%,#c9fa85 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:22px;color:rgba(255,255,255,.85);font-weight:400;letter-spacing:.01em}
+.subline{font-size:16px;color:rgba(255,255,255,.55)}
+#closingCard .award{margin-top:10px;padding:10px 22px;border:1px solid rgba(201,250,133,.5);
+  border-radius:999px;color:#c9fa85;font-size:15px;letter-spacing:.06em}
+
+/* ---------- control panel ---------- */
+#panel{position:fixed;top:0;right:0;bottom:0;width:380px;z-index:50;background:rgba(16,6,18,.92);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-left:1px solid rgba(255,255,255,.08);
+  padding:28px 26px;overflow-y:auto;transition:transform .5s ease}
+#panel.hidden{transform:translateX(105%)}
+#panel h1{font-size:22px;font-weight:700;margin-bottom:4px}
+#panel .hint{font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.55);margin-bottom:14px}
+#panel section{margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}
+#panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:#c9fa85;margin-bottom:10px}
+#panel label{display:block;font-size:12px;color:rgba(255,255,255,.6);margin:10px 0 4px}
+#panel input[type=password],#panel select{width:100%;padding:9px 11px;border-radius:9px;font-size:14px;
+  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#fff}
+#panel input[type=file]{width:100%;font-size:12px;color:rgba(255,255,255,.6)}
+.btn{display:block;width:100%;margin-top:12px;padding:12px;border-radius:11px;border:0;cursor:pointer;
+  font-size:15px;font-weight:600;background:#800080;color:#fff}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.go{background:#c9fa85;color:#1d201d;font-size:17px}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.25);font-weight:500;font-size:13px;padding:9px}
+#scenes{list-style:none;margin-top:6px}
+#scenes li{display:flex;align-items:center;gap:9px;font-size:13px;padding:7px 2px;color:rgba(255,255,255,.75)}
+#scenes .st{width:18px;text-align:center;flex:none}
+#scenes button{margin-left:auto;flex:none;background:none;border:1px solid rgba(255,255,255,.25);color:#fff;
+  border-radius:7px;font-size:11px;padding:3px 8px;cursor:pointer;visibility:hidden}
+#scenes li.ready button{visibility:visible}
+#err{margin-top:10px;font-size:12.5px;line-height:1.45;color:#ff9d90;white-space:pre-wrap}
+#fileWarn{display:none;position:fixed;left:20px;bottom:20px;z-index:60;max-width:420px;background:#5c1a1a;
+  border:1px solid #ff9d90;border-radius:12px;padding:14px 16px;font-size:13px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<div id="stage"><div id="phone"><iframe id="demo" src="newsflick_demo.html"></iframe></div></div>
+
+<div class="card on" id="titleCard">
+  <div class="wordmark">Fliq</div>
+  <div class="tagline">The first AI-native news app</div>
+</div>
+<div class="card" id="closingCard">
+  <div class="wordmark">Fliq</div>
+  <div class="tagline">News you can trust, in the time you have.</div>
+  <div class="award">HKICT&nbsp;Awards</div>
+</div>
+
+<div id="fileWarn"><b>Heads up:</b> this page is running from a local <code>file://</code> path, where the
+browser blocks it from driving the demo. Please open the hosted URL instead (the githack link).</div>
+
+<div id="panel">
+  <h1>Promo recorder</h1>
+  <p class="hint">This panel disappears when the show starts. Start your screen recorder first,
+  then press the green button. Press <b>Esc</b> during the show to abort and get the panel back.</p>
+
+  <section>
+    <h2>1 · Voiceover</h2>
+    <label>OpenAI API key (stays in this browser tab only)</label>
+    <input type="password" id="key" placeholder="sk-...">
+    <label>Voice</label>
+    <select id="voice">
+      <option value="onyx" selected>Onyx — deep, calm (recommended)</option>
+      <option value="ash">Ash — warm, steady</option>
+      <option value="echo">Echo — clear, neutral</option>
+      <option value="sage">Sage — soft, thoughtful</option>
+      <option value="nova">Nova — bright, friendly</option>
+      <option value="shimmer">Shimmer — light, gentle</option>
+    </select>
+    <button class="btn" id="gen">Generate voiceover</button>
+    <label style="margin-top:14px">…or load your own 6 audio files (01-*.mp3 … 06-*.mp3)</label>
+    <input type="file" id="files" multiple accept="audio/*">
+    <div id="err"></div>
+  </section>
+
+  <section>
+    <h2>2 · Scenes</h2>
+    <ul id="scenes"></ul>
+  </section>
+
+  <section>
+    <h2>3 · Record</h2>
+    <button class="btn go" id="start" disabled>Start the show</button>
+    <button class="btn ghost" id="rehearse">Silent rehearsal (no audio, for checking)</button>
+  </section>
+</div>
+
+<script>
+/* =========================================================
+   SCENES — narration must stay identical to fliq_video_script.md
+   Actions fire at a fraction (0–1) of the scene audio's duration.
+   ========================================================= */
+const VOICE_STYLE = 'Calm, measured product-demo narrator, like a premium tech product walkthrough. ' +
+  'Warm, clear and unhurried, about 140 words per minute. Neutral professional tone, subtle warmth, ' +
+  'short natural pauses at full stops. Never salesy or excited.';
+
+const SCENES = [
+{ id:'01-intro', label:'Intro', text:
+`Hi. We're Fliq — the first AI-native news app, built for the next generation of readers.
+
+Gen Z doesn't want less news. They want news they can actually trust, understand, and get through in the time they have.
+
+So we built Fliq around four ideas: transparent, comprehensive, visual, and personalized.
+
+This is our working prototype. Let us take you through it.`,
+  actions:[
+    {at:.28, run:()=> showCard(null)},
+    {at:.45, run:()=> scrollSub('feed','.scroll', 620, 3800)},
+    {at:.78, run:()=> scrollSub('feed','.scroll', 0, 2600)},
+  ]},
+
+{ id:'02-snapshot', label:'Snapshot', text:
+`This is your Snapshot — a summary of your entire feed, written the moment you open the app.
+
+What's happening now, why it matters, and the three things shaping your world today — housing, bills, and the fight over kids online.
+
+The purpose is simple: get genuinely informed in about one minute, without scrolling forever.
+
+Fliq respects your time. Check it, and go about your day — you'll always know what's going on. And when you want more, every story is one tap away.`,
+  actions:[
+    {at:.03, run:()=> scrollToEl('feed','.scroll','.snapshot', 1400, -12)},
+    {at:.30, run:()=> scrollSub('feed','.scroll', null, 3200, 210)},
+    {at:.82, run:()=> scrollToEl('feed','.scroll','.mcard[data-story="s01"]', 1800, -80)},
+  ]},
+
+{ id:'03-story', label:'Story & cards', text:
+`Let's open a story: should under-16s lose social media?
+
+Every story on Fliq is told in cards — short, visual, and in plain language. No walls of text.
+
+The first two or three cards give you the whole story: what's happening, who it affects, and why people disagree. If you stop there, you're already informed.
+
+Everything after that is depth, organized the way you'd actually ask questions. Background explains how we got here. The Arguments lays out both sides fairly, in their own words.
+
+This is what we mean by Gen Z native: not dumbed down — structured. Complex stories, made genuinely easy to understand.
+
+And at the top of every story, you'll notice two small signals. They're where Fliq really becomes different.`,
+  actions:[
+    {at:.02, run:()=>{ tapEl('feed','.mcard[data-story="s01"]'); setTimeout(()=>demoWin().openStory('s01'), 350); }},
+    {at:.14, run:()=> scrollSub('story','.phone', 560, 4200)},
+    {at:.34, run:()=> scrollSub('story','.phone', null, 4200, 620)},
+    {at:.52, run:()=> tapEl('story','.tab[data-tab="1"]')},
+    {at:.60, run:()=> scrollSub('story','.phone', null, 3000, 320)},
+    {at:.68, run:()=> tapEl('story','.tab[data-tab="2"]')},
+    {at:.76, run:()=> scrollSub('story','.phone', null, 3000, 320)},
+    {at:.88, run:()=> scrollSub('story','.phone', 0, 2200)},
+  ]},
+
+{ id:'04-confidence', label:'Confidence', text:
+`The first signal is Confidence — how settled the facts of this story actually are.
+
+This story is rated Low, and Fliq tells you exactly why. It's still developing; the evidence hasn't stabilised yet.
+
+Every key claim is labelled. Confirmed: a ban would require age checks — and here's the evidence. Ongoing: researchers see a small but real effect, still being verified. Unverified: no ban has run long enough to measure.
+
+Technical terms are explained in place, so you never need a second search.
+
+And everything traces back to sources — nine of them here, with their access and independence flagged.
+
+This is how we fight misinformation: not by deciding for you, but by showing our work. Transparency is the core of Fliq.`,
+  actions:[
+    {at:.02, run:()=> demoWin().openSheet('confidence')},
+    {at:.10, run:()=> { const d=subDoc('confidence'); const g=d&&d.querySelector('.gate'); if(g) g.hidden=true; }},
+    {at:.30, run:()=> scrollToEl('confidence','.scroll','.cs-why', 1400, -60)},
+    {at:.42, run:()=> tapEl('confidence','.cs-why:has(.cs-tag--ongoing)')},
+    {at:.54, run:()=> tapEl('confidence','.cs-why:has(.cs-tag--unverified)')},
+    {at:.66, run:()=> scrollToEl('confidence','.scroll','.cs-item--terms', 1600, -40)},
+    {at:.79, run:()=> scrollToEl('confidence','.scroll','.cs-src', 1600, -60)},
+    {at:.965,run:()=> demoWin().closeSheet('confidence')},
+  ]},
+
+{ id:'05-temperature', label:'Temperature', text:
+`The second signal is Temperature — how people actually feel about this story, right now.
+
+Fliq reads the conversation across social media — nine thousand posts for this story — and shows you the emotional weather. Sixty-six percent negative, split across four feelings: protective, wary, anxious, and skeptical.
+
+Tap any emotion to see who feels that way, and why, in their own words.
+
+Below the ring are the voices themselves — officials, experts, news outlets, and everyday commentators, side by side. Filter them, compare them, react to them.
+
+Most apps show you one narrative. Fliq shows you the whole conversation — so you understand not just the story, but how the world is responding to it.`,
+  actions:[
+    {at:.02, run:()=> demoWin().openSheet('pulse')},
+    {at:.32, run:()=> tapEl('pulse','.slice[data-emo="protective"]')},
+    {at:.43, run:()=> tapEl('pulse','.slice[data-emo="protective"]')},
+    {at:.50, run:()=> scrollToEl('pulse','.scroll','.tab[data-tab="All"]', 1600, -14)},
+    {at:.62, run:()=> tapEl('pulse','.tab[data-tab="Officials"]')},
+    {at:.70, run:()=> tapEl('pulse','.tab[data-tab="Experts"]')},
+    {at:.78, run:()=> tapEl('pulse','.voice:not([hidden]) [data-rx]')},
+    {at:.88, run:()=> scrollSub('pulse','.scroll', null, 5200, 700)},
+  ]},
+
+{ id:'06-closing', label:'Closing', text:
+`That's Fliq. Transparent about what's known. Comprehensive without the noise. Visual by design. And personal to every reader.
+
+News you can trust, in the time you have.
+
+We're Fliq — and we're really looking forward to the HKICT Awards.
+
+Thank you for watching.`,
+  actions:[
+    {at:.02, run:()=> demoWin().closeSheet('pulse')},
+    {at:.10, run:()=> demoWin().back()},
+    {at:.18, run:()=> scrollSub('feed','.scroll', 0, 1500)},
+    {at:.42, run:()=> showCard('closingCard')},
+  ]},
+];
+
+/* ========================================================= driver helpers */
+const $ = s => document.querySelector(s);
+const demoFrame = $('#demo');
+function demoWin(){ return demoFrame.contentWindow; }
+function subDoc(name){
+  try{
+    const f = demoWin().document.getElementById(name);
+    return f && f.contentDocument && f.contentDocument.body ? f.contentDocument : null;
+  }catch(e){ return null; }
+}
+/* retry until the sub-iframe's document and selector exist (sheets load lazily) */
+function withEl(name, sel, fn, tries=30){
+  const d = subDoc(name), el = d && d.querySelector(sel);
+  if(el) return fn(el, d);
+  if(tries>0) setTimeout(()=>withEl(name, sel, fn, tries-1), 120);
+}
+function ease(t){ return t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+function animScroll(box, to, ms){
+  const from = box.scrollTop, t0 = performance.now();
+  (function step(now){
+    const p = Math.min(1,(now-t0)/ms);
+    box.scrollTop = from + (to-from)*ease(p);
+    if(p<1) requestAnimationFrame(step);
+  })(t0);
+}
+/* scroll a sub-page: absolute y, or delta if y===null */
+function scrollSub(name, boxSel, y, ms, delta){
+  withEl(name, boxSel, box => animScroll(box, y===null ? box.scrollTop+delta : y, ms));
+}
+function scrollToEl(name, boxSel, sel, ms, offset=0){
+  withEl(name, sel, (el, d) => {
+    const box = d.querySelector(boxSel) || d.scrollingElement;
+    const y = el.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop + offset;
+    animScroll(box, Math.max(0,y), ms);
+  });
+}
+function tapEl(name, sel){
+  withEl(name, sel, el => {
+    const r = el.getBoundingClientRect();
+    const fr = demoFrame.getBoundingClientRect(), k = fr.width/375;
+    ripple(fr.left + (r.left+r.width/2)*k, fr.top + (r.top+r.height/2)*k);
+    const w = el.ownerDocument.defaultView;
+    setTimeout(()=>el.dispatchEvent(new w.MouseEvent('click',{bubbles:true,cancelable:true,view:w})), 160);
+  });
+}
+function ripple(x,y){
+  const d = document.createElement('div');
+  d.className='ripple'; d.style.left=x+'px'; d.style.top=y+'px';
+  document.body.appendChild(d); setTimeout(()=>d.remove(), 700);
+}
+function showCard(id){
+  ['titleCard','closingCard'].forEach(c => $('#'+c).classList.toggle('on', c===id));
+}
+
+/* ========================================================= audio: generate / load */
+const status = {};   // id -> {blob,url,dur}
+const list = $('#scenes');
+SCENES.forEach(s=>{
+  const li = document.createElement('li');
+  li.id = 'row-'+s.id;
+  li.innerHTML = `<span class="st">·</span><span>${s.id} — ${s.label}</span>
+                  <button data-prev="${s.id}">preview</button>`;
+  list.appendChild(li);
+});
+list.addEventListener('click', e=>{
+  const id = e.target.dataset && e.target.dataset.prev;
+  if(id && status[id]) new Audio(status[id].url).play();
+});
+function mark(id, sym, ready){
+  const li = $('#row-'+id);
+  li.querySelector('.st').textContent = sym;
+  li.classList.toggle('ready', !!ready);
+}
+function maybeEnableStart(){
+  $('#start').disabled = !SCENES.every(s=>status[s.id]);
+}
+async function decodeDur(blob){
+  return new Promise(res=>{
+    const a = new Audio(URL.createObjectURL(blob));
+    a.addEventListener('loadedmetadata', ()=>res(a.duration), {once:true});
+    a.addEventListener('error', ()=>res(null), {once:true});
+  });
+}
+async function setAudio(id, blob){
+  const dur = await decodeDur(blob);
+  status[id] = {blob, url:URL.createObjectURL(blob), dur};
+  mark(id, '✓', true); maybeEnableStart();
+}
+
+$('#gen').addEventListener('click', async ()=>{
+  const key = $('#key').value.trim();
+  $('#err').textContent = '';
+  if(!key){ $('#err').textContent = 'Paste your OpenAI API key first (or load MP3 files below).'; return; }
+  $('#gen').disabled = true;
+  try{
+    for(const s of SCENES){
+      mark(s.id, '…');
+      const r = await fetch('https://api.openai.com/v1/audio/speech', {
+        method:'POST',
+        headers:{'Authorization':'Bearer '+key, 'Content-Type':'application/json'},
+        body: JSON.stringify({model:'gpt-4o-mini-tts', voice:$('#voice').value,
+          input:s.text, instructions:VOICE_STYLE, response_format:'mp3'})
+      });
+      if(!r.ok){
+        const t = await r.text();
+        throw new Error('Scene '+s.id+': HTTP '+r.status+'\n'+t.slice(0,300));
+      }
+      await setAudio(s.id, await r.blob());
+    }
+  }catch(e){
+    $('#err').textContent = e.message + '\n\nNothing is saved server-side — fix and press Generate again.';
+  }
+  $('#gen').disabled = false;
+});
+
+$('#files').addEventListener('change', async e=>{
+  for(const f of e.target.files){
+    const m = f.name.match(/^0([1-6])/);
+    if(m) await setAudio(SCENES[+m[1]-1].id, f);
+  }
+});
+
+/* ========================================================= the show */
+let abort = false;
+function playScene(s, silent, speed){
+  return new Promise(resolve=>{
+    const fired = new Set();
+    const dur = silent
+      ? (s.text.split(/\s+/).length / 140 * 60) / speed
+      : status[s.id].dur;
+    const t0 = performance.now();
+    let audio = null;
+    if(!silent){ audio = new Audio(status[s.id].url); audio.play(); }
+    (function tick(){
+      if(abort){ if(audio) audio.pause(); return resolve(); }
+      const t = silent ? (performance.now()-t0)/1000
+                       : (audio.currentTime || (performance.now()-t0)/1000);
+      const p = Math.min(1, t/dur);
+      s.actions.forEach((a,i)=>{ if(p>=a.at && !fired.has(i)){ fired.add(i); try{a.run();}catch(e){console.warn(e);} } });
+      const done = silent ? p>=1 : (audio.ended || p>=1);
+      if(done) return resolve();
+      requestAnimationFrame(tick);
+    })();
+  });
+}
+async function runShow(silent, speed=1){
+  abort = false;
+  $('#panel').classList.add('hidden');
+  showCard('titleCard');
+  await new Promise(r=>setTimeout(r, 800));
+  for(const s of SCENES){
+    if(abort) break;
+    await playScene(s, silent, speed);
+    await new Promise(r=>setTimeout(r, 400/speed));
+  }
+  if(!abort){ await new Promise(r=>setTimeout(r, 3500/speed)); }
+  $('#panel').classList.remove('hidden');
+}
+$('#start').addEventListener('click', ()=>runShow(false));
+$('#rehearse').addEventListener('click', ()=>runShow(true, +(new URLSearchParams(location.search).get('speed'))||1));
+window.addEventListener('keydown', e=>{ if(e.key==='Escape'){ abort = true; showCard(null); $('#panel').classList.remove('hidden'); }});
+
+/* fit the phone to the viewport */
+function fit(){
+  const availW = innerWidth - ($('#panel').classList.contains('hidden') ? 0 : 380);
+  const k = Math.min((innerHeight*0.88)/812, (availW*0.8)/375, 1.35);
+  $('#phone').style.transform = 'scale('+k+')';
+}
+addEventListener('resize', fit);
+new MutationObserver(fit).observe($('#panel'), {attributes:true});
+fit();
+
+/* the demo page centers a device frame with page padding/shadow of its own —
+   strip that so the device fills our 375x812 iframe exactly */
+demoFrame.addEventListener('load', ()=>{
+  try{
+    const d = demoWin().document, st = d.createElement('style');
+    st.textContent = 'body{padding:0!important;background:transparent!important}' +
+                     '.device{margin:0!important;box-shadow:none!important}';
+    d.head.appendChild(st);
+  }catch(e){}
+});
+
+/* file:// warning + optional auto-rehearsal for automated testing */
+if(location.protocol==='file:') $('#fileWarn').style.display='block';
+addEventListener('load', ()=>{
+  const q = new URLSearchParams(location.search);
+  if(q.get('rehearse')) setTimeout(()=>runShow(true, +q.get('speed')||1), 1200);
+});
+</script>
+</body>
+</html>
